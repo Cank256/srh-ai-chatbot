@@ -1,7 +1,7 @@
 import { google } from '@ai-sdk/google';
 import { customProvider } from 'ai';
 
-export const DEFAULT_CHAT_MODEL: string = 'gemini-2';
+export const DEFAULT_CHAT_MODEL: string = 'primary';
 
 export const myProvider = customProvider({
   languageModels: {
