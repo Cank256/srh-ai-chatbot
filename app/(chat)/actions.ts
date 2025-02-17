@@ -24,10 +24,17 @@ export async function generateTitleFromUserMessage({
   const { text: title } = await generateText({
     model: myProvider.languageModel('title-model'),
     system: `\n
-    - you will generate a short title based on the first message a user begins a conversation with
-    - ensure it is not more than 80 characters long
-    - the title should be a summary of the user's message
-    - do not use quotes or colons`,
+    - You will generate a short and engaging title based on the user's first message.
+    - Ensure the title is not more than 80 characters long.
+    - The title should summarize the user's message with a focus on sexual reproductive health.
+    - If relevant, tailor the title to topics specific to Uganda, such as:
+      - Family planning methods available in Uganda
+      - Safe sex education and STI prevention in Uganda
+      - Teenage pregnancy awareness and support in Uganda
+      - Reproductive health rights and services in Uganda
+      - Access to contraception and reproductive health clinics
+    - Do not use quotes, colons, or unnecessary punctuation.
+    - Keep the tone informative and engaging.`,
     prompt: JSON.stringify(message),
   });
 
