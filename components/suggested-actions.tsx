@@ -17,24 +17,24 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const suggestedActions = [
     {
       title: 'What are the advantages',
-      label: 'of using Next.js?',
-      action: 'What are the advantages of using Next.js?',
+      label: 'of family planning?',
+      action: 'What are the advantages of family planning in Uganda?',
     },
     {
-      title: 'Write code to',
-      label: `demonstrate djikstra's algorithm`,
-      action: `Write code to demonstrate djikstra's algorithm`,
+      title: 'Write steps to',
+      label: 'prevent STIs effectively',
+      action: 'Write steps to prevent STIs effectively in Uganda.',
     },
     {
       title: 'Help me write an essay',
-      label: `about silicon valley`,
-      action: `Help me write an essay about silicon valley`,
+      label: 'about teenage pregnancy',
+      action: 'Help me write an essay about teenage pregnancy in Uganda.',
     },
     {
-      title: 'What is the weather',
-      label: 'in San Francisco?',
-      action: 'What is the weather in San Francisco?',
-    },
+      title: 'What are the services',
+      label: 'for reproductive health?',
+      action: 'What are the services for reproductive health in Uganda?',
+    }    
   ];
 
   return (
