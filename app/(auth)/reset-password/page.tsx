@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { AuthForm } from '@/components/auth-form';
 import { SubmitButton } from '@/components/submit-button';
 
-import { login, type LoginActionState } from '../actions';
+import { resetPassword, type ResetPasswordActionState } from '../actions';
 
 export default function Page() {
   const router = useRouter();
@@ -17,8 +17,8 @@ export default function Page() {
   const [email, setEmail] = useState('');
   const [isSuccessful, setIsSuccessful] = useState(false);
 
-  const [state, formAction] = useActionState<LoginActionState, FormData>(
-    login,
+  const [state, formAction] = useActionState<ResetPasswordActionState, FormData>(
+    resetPassword,
     {
       status: 'idle',
     },
@@ -26,12 +26,12 @@ export default function Page() {
 
   useEffect(() => {
     if (state.status === 'failed') {
-      toast.error('Invalid credentials!');
+      toast.error('Invalid Email Address!');
     } else if (state.status === 'invalid_data') {
       toast.error('Failed validating your submission!');
     } else if (state.status === 'success') {
       setIsSuccessful(true);
-      router.refresh();
+      router.push('/login');
     }
   }, [state.status, router]);
 
@@ -50,6 +50,7 @@ export default function Page() {
               alt="BSU logo"
               width={140}
               height={30}
+              priority
             />
             <Image
               src="/images/gu-logo.png"
@@ -61,31 +62,21 @@ export default function Page() {
           <p className='mb-8 text-xl font-bold dark:text-zinc-50'>
           CONSCOV AI Chatbot
           </p>
-          <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
+          <h3 className="text-xl font-semibold dark:text-zinc-50">Reset Password</h3>
           <p className="text-sm text-gray-500 dark:text-zinc-400">
-            Use your email and password to sign in
+            Use your email to reset your password
           </p>
         </div>
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
+        <AuthForm action={handleSubmit} defaultEmail={email} resetPassword={true}>
+          <SubmitButton isSuccessful={isSuccessful}>Reset Password</SubmitButton>
           <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {"Forgot your passord? "}
+            {"Remembered your password? "}
             <Link
-              href="/reset-password"
+              href="/login"
               className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
             >
-              Reset it here.
+              Sign in
             </Link>
-          </p>
-          <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {"Don't have an account? "}
-            <Link
-              href="/register"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign up
-            </Link>
-            {' for free.'}
           </p>
         </AuthForm>
       </div>

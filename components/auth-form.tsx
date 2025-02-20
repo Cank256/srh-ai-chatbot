@@ -7,12 +7,14 @@ export function AuthForm({
   action,
   children,
   defaultEmail = '',
+  resetPassword = false,
 }: {
   action: NonNullable<
     string | ((formData: FormData) => void | Promise<void>) | undefined
   >;
   children: React.ReactNode;
   defaultEmail?: string;
+  resetPassword?: boolean;
 }) {
   return (
     <Form action={action} className="flex flex-col gap-4 px-4 sm:px-16">
@@ -37,7 +39,7 @@ export function AuthForm({
         />
       </div>
 
-      <div className="flex flex-col gap-2">
+      {resetPassword? null: (<div className="flex flex-col gap-2">
         <Label
           htmlFor="password"
           className="text-zinc-600 font-normal dark:text-zinc-400"
@@ -53,6 +55,7 @@ export function AuthForm({
           required
         />
       </div>
+      )}
 
       {children}
     </Form>

@@ -47,6 +47,21 @@ export async function createUser(email: string, password: string) {
   }
 }
 
+export async function updateUser(passwordReset: boolean = false, data: User) {
+  if (passwordReset && data.password) {
+    const salt = genSaltSync(10);
+    const hash = hashSync(data.password, salt);
+    data.password = hash;
+  }
+
+  try {
+    return await db.update(user).set(data).where(eq(user.id, data.id));
+  } catch (error) {
+    console.error('Failed to update user in database');
+    throw error;
+  }
+}
+
 export async function saveChat({
   id,
   userId,

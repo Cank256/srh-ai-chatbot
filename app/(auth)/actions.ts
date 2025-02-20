@@ -2,13 +2,19 @@
 
 import { z } from 'zod';
 
-import { createUser, getUser } from '@/lib/db/queries';
+import { createUser, getUser, updateUser } from '@/lib/db/queries';
 
 import { signIn } from './auth';
+
+import { generateUUID } from '@/lib/utils';
 
 const authFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
+});
+
+const resetPasswordSchema = z.object({
+  email: z.string().email(),
 });
 
 export interface LoginActionState {
@@ -72,6 +78,39 @@ export const register = async (
       password: validatedData.password,
       redirect: false,
     });
+
+    return { status: 'success' };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { status: 'invalid_data' };
+    }
+
+    return { status: 'failed' };
+  }
+};
+
+export interface ResetPasswordActionState {
+  status: 'idle' | 'in_progress' | 'success' | 'failed' | 'invalid_data';
+}
+
+export const resetPassword = async (
+  _: ResetPasswordActionState,
+  formData: FormData,
+): Promise<ResetPasswordActionState> => {
+  try {
+    const validatedData = resetPasswordSchema.parse({
+      email: formData.get('email')
+    });
+
+    const [user] = await getUser(validatedData.email);
+
+    if (!user) {
+      return { status: 'failed' };
+    }
+
+    // Generate a unique reset token
+    const resetToken = generateUUID();
+    await updateUser(false, { ...user, reset_token:resetToken });
 
     return { status: 'success' };
   } catch (error) {
