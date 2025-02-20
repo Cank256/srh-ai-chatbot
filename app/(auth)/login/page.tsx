@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 import { AuthForm } from '@/components/auth-form';
 import { SubmitButton } from '@/components/submit-button';
@@ -43,6 +44,23 @@ export default function Page() {
     <div className="flex h-dvh w-screen items-start pt-12 md:pt-0 md:items-center justify-center bg-background">
       <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
         <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
+          <p className="flex flex-row justify-center gap-16 items-center">
+            <Image
+              src="/images/bsu-logo.png"
+              alt="BSU logo"
+              width={140}
+              height={30}
+            />
+            <Image
+              src="/images/gu-logo.png"
+              alt="GU logo"
+              width={100}
+              height={10}
+            />
+          </p>
+          <p className='mb-8 text-xl font-bold dark:text-zinc-50'>
+          CONSCOV AI Chatbot
+          </p>
           <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
           <p className="text-sm text-gray-500 dark:text-zinc-400">
             Use your email and password to sign in
