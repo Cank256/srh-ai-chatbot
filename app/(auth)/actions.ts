@@ -6,8 +6,6 @@ import { createUser, getUser, updateUser } from '@/lib/db/queries';
 
 import { signIn } from './auth';
 
-import { generateUUID } from '@/lib/utils';
-
 import { sendResetEmail } from '@/lib/email';
 
 const authFormSchema = z.object({
@@ -18,6 +16,14 @@ const authFormSchema = z.object({
 const resetPasswordSchema = z.object({
   email: z.string().email(),
 });
+
+async function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 export interface LoginActionState {
   status: 'idle' | 'in_progress' | 'success' | 'failed' | 'invalid_data';
@@ -110,7 +116,7 @@ export const resetPassword = async (
       return { status: 'failed' };
     }
     // Generate a unique reset token
-    const resetToken = generateUUID();
+    const resetToken = await generateUUID();
     await updateUser(false, { ...user, reset_token:resetToken });
     
     // Send email to user with reset link
