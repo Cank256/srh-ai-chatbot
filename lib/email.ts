@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendResetEmail = async (email: string, resetToken: string) => {
     try {
-        const resetPasswordLink = `${process.env.APP_URL}}/reset-password/${resetToken}`;
+        const resetPasswordLink = `${process.env.APP_URL}/reset-password/${resetToken}`;
         await resend.emails.send({
             from: process.env.EMAIL_FROM || '',
             to: email,
