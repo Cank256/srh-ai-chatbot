@@ -8,6 +8,8 @@ import { signIn } from './auth';
 
 import { generateUUID } from '@/lib/utils';
 
+import { sendResetEmail } from '@/lib/email';
+
 const authFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
@@ -107,10 +109,12 @@ export const resetPassword = async (
     if (!user) {
       return { status: 'failed' };
     }
-
     // Generate a unique reset token
     const resetToken = generateUUID();
     await updateUser(false, { ...user, reset_token:resetToken });
+    
+    // Send email to user with reset link
+    await sendResetEmail(user.email, resetToken);
 
     return { status: 'success' };
   } catch (error) {
