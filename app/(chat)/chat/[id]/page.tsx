@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { auth } from '@/app/(auth)/auth';
 import { Chat } from '@/components/chat';
 import { getChatById, getMessagesByChatId } from '@/lib/db/queries';
-import { convertToUIMessages } from '@/lib/utils';
+import { convertToUIMessages } from '@/lib/server-utils';
 import { DataStreamHandler } from '@/components/data-stream-handler';
 import { DEFAULT_CHAT_MODEL } from '@/lib/ai/models';
 
@@ -41,7 +41,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       <>
         <Chat
           id={chat.id}
-          initialMessages={convertToUIMessages(messagesFromDb)}
+          initialMessages={await convertToUIMessages(messagesFromDb)}
           selectedChatModel={DEFAULT_CHAT_MODEL}
           selectedVisibilityType={chat.visibility}
           isReadonly={session?.user?.id !== chat.userId}
@@ -55,7 +55,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     <>
       <Chat
         id={chat.id}
-        initialMessages={convertToUIMessages(messagesFromDb)}
+        initialMessages={await convertToUIMessages(messagesFromDb)}
         selectedChatModel={chatModelFromCookie.value}
         selectedVisibilityType={chat.visibility}
         isReadonly={session?.user?.id !== chat.userId}

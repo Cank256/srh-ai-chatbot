@@ -15,11 +15,11 @@ import {
   saveMessages,
 } from '@/lib/db/queries';
 import {
-  getMostRecentUserMessage,
   sanitizeResponseMessages,
 } from '@/lib/utils';
 import {
-  generateUUID
+  generateUUID,
+  getMostRecentUserMessage,
 } from '@/lib/server-utils';
 
 import { generateTitleFromUserMessage } from '../../actions';
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const userMessage = getMostRecentUserMessage(messages);
+  const userMessage = await getMostRecentUserMessage(messages);
 
   if (!userMessage) {
     return new Response('No user message found', { status: 400 });
