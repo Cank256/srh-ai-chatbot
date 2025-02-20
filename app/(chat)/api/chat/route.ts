@@ -15,10 +15,12 @@ import {
   saveMessages,
 } from '@/lib/db/queries';
 import {
-  generateUUID,
   getMostRecentUserMessage,
   sanitizeResponseMessages,
 } from '@/lib/utils';
+import {
+  generateUUID
+} from '@/lib/server-utils';
 
 import { generateTitleFromUserMessage } from '../../actions';
 import { createDocument } from '@/lib/ai/tools/create-document';
@@ -27,6 +29,8 @@ import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
 import { getWeather } from '@/lib/ai/tools/get-weather';
 
 export const maxDuration = 60;
+
+const uuid = await generateUUID();
 
 export async function POST(request: Request) {
   const {
@@ -76,7 +80,7 @@ export async function POST(request: Request) {
                 'requestSuggestions',
               ],
         experimental_transform: smoothStream({ chunking: 'word' }),
-        experimental_generateMessageId: generateUUID,
+        experimental_generateMessageId: () => uuid,
         tools: {
           getWeather,
           createDocument: createDocument({ session, dataStream }),
