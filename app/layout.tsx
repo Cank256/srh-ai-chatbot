@@ -7,8 +7,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL || ''),
-  title: process.env.APP_NAME || '',
-  description: process.env.APP_DESCRIPTION || '',
+  title: process.env.NEXT_PUBLIC_APP_NAME || '',
+  description: process.env.NEXT_PUBLIC_APP_DESCRIPTION || '',
 };
 
 export const viewport = {
