@@ -6,9 +6,9 @@ import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://chat.vercel.ai'),
-  title: 'CONSCOV AI Chatbot',
-  description: 'Sexual Reproductive Health AI Chatbot.',
+  metadataBase: new URL(process.env.APP_URL || ''),
+  title: process.env.APP_NAME || '',
+  description: process.env.APP_DESCRIPTION || '',
 };
 
 export const viewport = {
