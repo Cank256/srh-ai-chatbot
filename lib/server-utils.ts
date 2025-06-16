@@ -56,8 +56,18 @@ function addToolMessageToChat({
   messages,
 }: {
   toolMessage: CoreToolMessage;
-  messages: Array<Message>;
-}): Array<Message> {
+  messages: Array<{
+    id: string;
+    role: Message['role'];
+    content: string;
+    toolInvocations?: Array<ToolInvocation>;
+  }>;
+}): Array<{
+  id: string;
+  role: Message['role'];
+  content: string;
+  toolInvocations?: Array<ToolInvocation>;
+}> {
   return messages.map((message) => {
     if (message.toolInvocations) {
       return {
@@ -87,7 +97,14 @@ function addToolMessageToChat({
 export async function convertToUIMessages(
   messages: Array<DBMessage>,
 ) {
-  return messages.reduce((chatMessages: Array<Message>, message) => {
+  const chatMessages = messages.reduce<
+    Array<{
+      id: string;
+      role: Message['role'];
+      content: string;
+      toolInvocations?: Array<ToolInvocation>;
+    }>
+  >((chatMessages, message) => {
     if (message.role === 'tool') {
       return addToolMessageToChat({
         toolMessage: message as CoreToolMessage,
@@ -96,7 +113,6 @@ export async function convertToUIMessages(
     }
 
     let textContent = '';
-    let reasoning: string | undefined = undefined;
     const toolInvocations: Array<ToolInvocation> = [];
 
     if (typeof message.content === 'string') {
@@ -112,8 +128,6 @@ export async function convertToUIMessages(
             toolName: content.toolName,
             args: content.args,
           });
-        } else if (content.type === 'reasoning') {
-          reasoning = content.reasoning;
         }
       }
     }
@@ -122,7 +136,6 @@ export async function convertToUIMessages(
       id: message.id,
       role: message.role as Message['role'],
       content: textContent,
-      reasoning,
       toolInvocations,
     });
 
@@ -135,10 +148,8 @@ type ResponseMessage = ResponseMessageWithoutId & { id: string };
 
 export async function sanitizeResponseMessages({
   messages,
-  reasoning,
 }: {
   messages: Array<ResponseMessage>;
-  reasoning: string | undefined;
 }) {
   const toolResultIds: Array<string> = [];
 
@@ -165,10 +176,7 @@ export async function sanitizeResponseMessages({
           : true,
     );
 
-    if (reasoning) {
-      // @ts-expect-error: reasoning message parts in sdk is wip
-      sanitizedContent.push({ type: 'reasoning', reasoning });
-    }
+
 
     return {
       ...message,

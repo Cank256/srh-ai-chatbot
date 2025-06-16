@@ -1,4 +1,3 @@
-'use client'
 import type {
   CoreAssistantMessage,
   CoreToolMessage,
@@ -85,60 +84,72 @@ function addToolMessageToChat({
 }
 
 export function convertToUIMessages(
-  messages: Array<DBMessage>,
+  dbMessages: Array<DBMessage>,
 ): Array<Message> {
-  return messages.reduce((chatMessages: Array<Message>, message) => {
-    if (message.role === 'tool') {
-      return addToolMessageToChat({
-        toolMessage: message as CoreToolMessage,
-        messages: chatMessages,
+  const uiMessages: Array<Message> = [];
+
+  // First pass: convert non-tool messages and collect tool calls
+  for (const dbMessage of dbMessages) {
+    if (dbMessage.role !== 'tool') {
+      let textContent = '';
+      const toolInvocations: Array<ToolInvocation> = [];
+      if (typeof dbMessage.content === 'string') {
+        textContent = dbMessage.content;
+      } else if (Array.isArray(dbMessage.content)) {
+        for (const contentPart of dbMessage.content) {
+          if (contentPart.type === 'text') {
+            textContent += contentPart.text;
+          } else if (contentPart.type === 'tool-call') {
+            toolInvocations.push({
+              state: 'call',
+              toolCallId: contentPart.toolCallId,
+              toolName: contentPart.toolName,
+              args: contentPart.args,
+            });
+          }
+        }
+      }
+      uiMessages.push({
+        id: dbMessage.id,
+        role: dbMessage.role as Message['role'],
+        content: textContent,
+        toolInvocations: toolInvocations,
       });
     }
+  }
 
-    let textContent = '';
-    let reasoning: string | undefined = undefined;
-    const toolInvocations: Array<ToolInvocation> = [];
-
-    if (typeof message.content === 'string') {
-      textContent = message.content;
-    } else if (Array.isArray(message.content)) {
-      for (const content of message.content) {
-        if (content.type === 'text') {
-          textContent += content.text;
-        } else if (content.type === 'tool-call') {
-          toolInvocations.push({
-            state: 'call',
-            toolCallId: content.toolCallId,
-            toolName: content.toolName,
-            args: content.args,
-          });
-        } else if (content.type === 'reasoning') {
-          reasoning = content.reasoning;
+  // Second pass: process tool messages and update corresponding assistant messages
+  for (const dbMessage of dbMessages) {
+    if (dbMessage.role === 'tool') {
+      const toolMessage = dbMessage as CoreToolMessage;
+      for (const toolResult of toolMessage.content) {
+        for (const uiMessage of uiMessages) {
+          if (uiMessage.toolInvocations) {
+            const invocationIndex = uiMessage.toolInvocations.findIndex(
+              (inv) => inv.toolCallId === toolResult.toolCallId,
+            );
+            if (invocationIndex !== -1) {
+              uiMessage.toolInvocations[invocationIndex] = {
+                ...uiMessage.toolInvocations[invocationIndex],
+                state: 'result',
+                result: toolResult.result,
+              };
+            }
+          }
         }
       }
     }
-
-    chatMessages.push({
-      id: message.id,
-      role: message.role as Message['role'],
-      content: textContent,
-      reasoning,
-      toolInvocations,
-    });
-
-    return chatMessages;
-  }, []);
+  }
+  return uiMessages;
 }
 
 type ResponseMessageWithoutId = CoreToolMessage | CoreAssistantMessage;
 type ResponseMessage = ResponseMessageWithoutId & { id: string };
 
-export function sanitizeResponseMessages({
+export async function sanitizeResponseMessages({
   messages,
-  reasoning,
 }: {
   messages: Array<ResponseMessage>;
-  reasoning: string | undefined;
 }) {
   const toolResultIds: Array<string> = [];
 
@@ -165,10 +176,7 @@ export function sanitizeResponseMessages({
           : true,
     );
 
-    if (reasoning) {
-      // @ts-expect-error: reasoning message parts in sdk is wip
-      sanitizedContent.push({ type: 'reasoning', reasoning });
-    }
+
 
     return {
       ...message,

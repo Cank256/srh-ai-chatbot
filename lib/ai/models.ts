@@ -1,13 +1,8 @@
 import { google } from '@ai-sdk/google';
-import { customProvider } from 'ai';
 
-export const DEFAULT_CHAT_MODEL: string = 'primary-model';
+export const DEFAULT_CHAT_MODEL: string = 'gemini-2.0-flash-001';
 
-export const myProvider = customProvider({
-  languageModels: {
-    'primary-model': google('gemini-2.0-flash-001'),
-  },
-});
+export const myProvider = google;
 
 interface ChatModel {
   id: string;

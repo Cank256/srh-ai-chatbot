@@ -6,7 +6,7 @@ import {
 } from 'ai';
 
 import { auth } from '@/app/(auth)/auth';
-import { myProvider } from '@/lib/ai/models';
+import { google } from '@ai-sdk/google';
 import { systemPrompt } from '@/lib/ai/prompts';
 import {
   deleteChatById,
@@ -29,8 +29,6 @@ import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
 import { getWeather } from '@/lib/ai/tools/get-weather';
 
 export const maxDuration = 60;
-
-const uuid = await generateUUID();
 
 export async function POST(request: Request) {
   const {
@@ -66,7 +64,7 @@ export async function POST(request: Request) {
   return createDataStreamResponse({
     execute: (dataStream) => {
       const result = streamText({
-        model: myProvider.languageModel(selectedChatModel),
+        model: google(selectedChatModel),
         system: systemPrompt({ selectedChatModel }),
         messages,
         maxSteps: 5,
@@ -80,7 +78,6 @@ export async function POST(request: Request) {
                 'requestSuggestions',
               ],
         experimental_transform: smoothStream({ chunking: 'word' }),
-        experimental_generateMessageId: () => uuid,
         tools: {
           getWeather,
           createDocument: createDocument({ session, dataStream }),
@@ -90,12 +87,18 @@ export async function POST(request: Request) {
             dataStream,
           }),
         },
-        onFinish: async ({ response, reasoning }) => {
+        onFinish: async ({ response }) => {
           if (session.user?.id) {
             try {
-              const sanitizedResponseMessages = sanitizeResponseMessages({
-                messages: response.messages,
-                reasoning,
+              const messagesWithIds = await Promise.all(
+                response.messages.map(async (message) => ({
+                  ...message,
+                  id: await generateUUID(),
+                }))
+              );
+              
+              const sanitizedResponseMessages = await sanitizeResponseMessages({
+                messages: messagesWithIds,
               });
 
               await saveMessages({
@@ -120,9 +123,7 @@ export async function POST(request: Request) {
         },
       });
 
-      result.mergeIntoDataStream(dataStream, {
-        sendReasoning: true,
-      });
+      result.mergeIntoDataStream(dataStream);
     },
     onError: () => {
       return 'Oops, an error occured!';

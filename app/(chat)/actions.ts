@@ -1,6 +1,7 @@
 'use server';
 
 import { generateText, Message } from 'ai';
+import { google } from '@ai-sdk/google';
 import { cookies } from 'next/headers';
 
 import {
@@ -9,7 +10,7 @@ import {
   updateChatVisiblityById,
 } from '@/lib/db/queries';
 import { VisibilityType } from '@/components/visibility-selector';
-import { myProvider } from '@/lib/ai/models';
+
 
 export async function saveChatModelAsCookie(model: string) {
   const cookieStore = await cookies();
@@ -22,7 +23,7 @@ export async function generateTitleFromUserMessage({
   message: Message;
 }) {
   const { text: title } = await generateText({
-    model: myProvider.languageModel('primary-model'),
+    model: google('gemini-2.0-flash-001'),
     system: `\n
     - You will generate a short and engaging title based on the user's first message.
     - Ensure the title is not more than 80 characters long.
