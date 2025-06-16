@@ -51,13 +51,15 @@ export const VersionFooter = ({
 
       <div className="flex flex-row gap-4">
         <Button
-          disabled={isMutating}
+          disabled={isMutating || !artifact.documentId || artifact.documentId === ''}
           onClick={async () => {
+            if (!artifact.documentId || artifact.documentId === '') return;
+            
             setIsMutating(true);
 
             mutate(
-              `/api/document?id=${artifact.documentId}`,
-              await fetch(`/api/document?id=${artifact.documentId}`, {
+              `/chat/api/document?id=${artifact.documentId}`,
+              await fetch(`/chat/api/document?id=${artifact.documentId}`, {
                 method: 'PATCH',
                 body: JSON.stringify({
                   timestamp: getDocumentTimestampByIndex(

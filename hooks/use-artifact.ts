@@ -5,7 +5,7 @@ import { UIArtifact } from '@/components/artifact';
 import { useCallback, useMemo } from 'react';
 
 export const initialArtifactData: UIArtifact = {
-  documentId: 'init',
+  documentId: '',
   content: '',
   kind: 'text',
   title: '',

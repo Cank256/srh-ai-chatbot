@@ -7,7 +7,6 @@ import { getChatById, getMessagesByChatId } from '@/lib/db/queries';
 import { convertToUIMessages } from '@/lib/utils';
 import { DataStreamHandler } from '@/components/data-stream-handler';
 import { DEFAULT_CHAT_MODEL } from '@/lib/ai/models';
-import { redirect } from 'next/navigation';
 import type { Message } from 'ai';
 import type { Message as DBMessage } from '@/lib/db/schema';
 

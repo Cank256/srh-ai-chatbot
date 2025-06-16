@@ -28,7 +28,6 @@ import { useSidebar } from './ui/sidebar';
 import { useArtifact } from '@/hooks/use-artifact';
 import { imageArtifact } from '@/artifacts/image/client';
 import { codeArtifact } from '@/artifacts/code/client';
-import { sheetArtifact } from '@/artifacts/sheet/client';
 import { textArtifact } from '@/artifacts/text/client';
 import equal from 'fast-deep-equal';
 
@@ -36,7 +35,6 @@ export const artifactDefinitions = [
   textArtifact,
   codeArtifact,
   imageArtifact,
-  sheetArtifact,
 ];
 export type ArtifactKind = (typeof artifactDefinitions)[number]['kind'];
 
@@ -103,8 +101,8 @@ function PureArtifact({
     isLoading: isDocumentsFetching,
     mutate: mutateDocuments,
   } = useSWR<Array<Document>>(
-    artifact.documentId !== 'init' && artifact.status !== 'streaming'
-      ? `/api/document?id=${artifact.documentId}`
+    artifact.documentId && artifact.documentId !== ''
+      ? `/chat/api/document?id=${artifact.documentId}`
       : null,
     fetcher,
   );
@@ -139,10 +137,10 @@ function PureArtifact({
 
   const handleContentChange = useCallback(
     (updatedContent: string) => {
-      if (!artifact) return;
+      if (!artifact || !artifact.documentId || artifact.documentId === '') return;
 
       mutate<Array<Document>>(
-        `/api/document?id=${artifact.documentId}`,
+        `/chat/api/document?id=${artifact.documentId}`,
         async (currentDocuments) => {
           if (!currentDocuments) return undefined;
 
@@ -154,14 +152,16 @@ function PureArtifact({
           }
 
           if (currentDocument.content !== updatedContent) {
-            await fetch(`/api/document?id=${artifact.documentId}`, {
-              method: 'POST',
-              body: JSON.stringify({
-                title: artifact.title,
-                content: updatedContent,
-                kind: artifact.kind,
-              }),
-            });
+            if (artifact.documentId && artifact.documentId !== '') {
+              await fetch(`/chat/api/document?id=${artifact.documentId}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                  title: artifact.title,
+                  content: updatedContent,
+                  kind: artifact.kind,
+                }),
+              });
+            }
 
             setIsContentDirty(false);
 
@@ -255,7 +255,7 @@ function PureArtifact({
   }
 
   useEffect(() => {
-    if (artifact.documentId !== 'init') {
+    if (artifact.documentId && artifact.documentId !== '') {
       if (artifactDefinition.initialize) {
         artifactDefinition.initialize({
           documentId: artifact.documentId,

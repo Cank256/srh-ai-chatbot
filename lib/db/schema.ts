@@ -9,13 +9,18 @@ import {
   primaryKey,
   foreignKey,
   boolean,
+  integer,
 } from 'drizzle-orm/pg-core';
+import { InferSelectModel } from 'drizzle-orm';
 
 export const user = pgTable('User', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
   email: varchar('email', { length: 64 }).notNull(),
   password: varchar('password', { length: 64 }),
   reset_token: uuid('reset_token'),
+  role: varchar('role', { enum: ['user', 'admin'] }).notNull().default('user'),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  lastLoginAt: timestamp('lastLoginAt'),
 });
 
 export type User = InferSelectModel<typeof user>;
@@ -73,7 +78,7 @@ export const document = pgTable(
     createdAt: timestamp('createdAt').notNull(),
     title: text('title').notNull(),
     content: text('content'),
-    kind: varchar('text', { enum: ['text', 'code', 'image', 'sheet'] })
+    kind: varchar('kind', { enum: ['text', 'code', 'image', 'sheet'] })
       .notNull()
       .default('text'),
     userId: uuid('userId')
@@ -114,3 +119,56 @@ export const suggestion = pgTable(
 );
 
 export type Suggestion = InferSelectModel<typeof suggestion>;
+
+// Admin tables
+export const aiModel = pgTable('AiModel', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  provider: varchar('provider', { enum: ['openai', 'gemini'] }).notNull(),
+  modelId: varchar('modelId', { length: 100 }).notNull(),
+  modelName: varchar('modelName', { length: 100 }).notNull(),
+  description: text('description'),
+  isActive: boolean('isActive').notNull().default(false),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+});
+
+export type AiModel = InferSelectModel<typeof aiModel>;
+
+export const apiKey = pgTable('ApiKey', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  provider: varchar('provider', { enum: ['openai', 'gemini'] }).notNull(),
+  keyName: varchar('keyName', { length: 100 }).notNull(),
+  encryptedKey: text('encryptedKey').notNull(),
+  isActive: boolean('isActive').notNull().default(false),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+});
+
+export type ApiKey = InferSelectModel<typeof apiKey>;
+
+export const analytics = pgTable('Analytics', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  date: timestamp('date').notNull(),
+  totalUsers: integer('totalUsers').notNull().default(0),
+  activeUsers: integer('activeUsers').notNull().default(0),
+  totalChats: integer('totalChats').notNull().default(0),
+  totalMessages: integer('totalMessages').notNull().default(0),
+  apiCalls: integer('apiCalls').notNull().default(0),
+  errors: integer('errors').notNull().default(0),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+});
+
+export type Analytics = InferSelectModel<typeof analytics>;
+
+export const systemSettings = pgTable('SystemSettings', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  key: varchar('key', { length: 100 }).notNull().unique(),
+  value: text('value').notNull(),
+  description: text('description'),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  updatedBy: uuid('updatedBy')
+    .notNull()
+    .references(() => user.id),
+});
+
+export type SystemSettings = InferSelectModel<typeof systemSettings>;

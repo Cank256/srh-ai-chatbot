@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 export const imageArtifact = new Artifact({
   kind: 'image',
-  description: 'Useful for image generation',
+  description: 'Useful for image processing and viewing (supports common image formats like PNG, JPEG, GIF, etc.)',
   onStreamPart: ({ streamPart, setArtifact }) => {
     if (streamPart.type === 'image-delta') {
       setArtifact((draftArtifact) => ({
