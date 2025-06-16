@@ -30,7 +30,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { MoreHorizontal, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
-import { updateAiModel, deleteAiModel } from '@/lib/db/queries';
+import { updateAiModel, deleteAiModel } from '@/app/models/actions';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 

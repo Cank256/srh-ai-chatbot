@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { createAiModel } from '@/lib/db/queries';
+import { createAiModel } from '@/app/models/actions';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 

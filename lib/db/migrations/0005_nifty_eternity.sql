@@ -41,10 +41,11 @@ CREATE TABLE IF NOT EXISTS "SystemSettings" (
 	CONSTRAINT "SystemSettings_key_unique" UNIQUE("key")
 );
 --> statement-breakpoint
-ALTER TABLE "User" ADD COLUMN "reset_token" uuid;--> statement-breakpoint
-ALTER TABLE "User" ADD COLUMN "role" varchar DEFAULT 'user' NOT NULL;--> statement-breakpoint
-ALTER TABLE "User" ADD COLUMN "createdAt" timestamp DEFAULT now() NOT NULL;--> statement-breakpoint
-ALTER TABLE "User" ADD COLUMN "lastLoginAt" timestamp;--> statement-breakpoint
+-- User table columns may already exist, commenting out all User table alterations
+-- ALTER TABLE "User" ADD COLUMN "reset_token" uuid;--> statement-breakpoint
+-- ALTER TABLE "User" ADD COLUMN "role" varchar DEFAULT 'user' NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "User" ADD COLUMN "createdAt" timestamp DEFAULT now() NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "User" ADD COLUMN "lastLoginAt" timestamp;--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "SystemSettings" ADD CONSTRAINT "SystemSettings_updatedBy_User_id_fk" FOREIGN KEY ("updatedBy") REFERENCES "public"."User"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION

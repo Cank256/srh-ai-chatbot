@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { updateSystemSetting } from '@/lib/db/queries';
+import { updateSystemSetting } from '@/app/settings/actions';
 import { Loader2 } from 'lucide-react';
 
 interface SystemSettingsFormProps {

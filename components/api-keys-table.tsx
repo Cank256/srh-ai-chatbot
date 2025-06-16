@@ -30,7 +30,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { MoreHorizontal, Trash2, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import { format } from 'date-fns';
-import { updateApiKey, deleteApiKey } from '@/lib/db/queries';
+import { updateApiKey, deleteApiKey } from '@/app/api-keys/actions';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -174,7 +174,7 @@ export function ApiKeysTable({ apiKeys }: ApiKeysTableProps) {
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the API key
-              "{selectedKey?.keyName}" for {selectedKey?.provider}.
+              &quot;{selectedKey?.keyName}&quot; for {selectedKey?.provider}.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

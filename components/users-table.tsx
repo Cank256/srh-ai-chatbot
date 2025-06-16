@@ -30,7 +30,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { MoreHorizontal, Shield, User as UserIcon, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
-import { updateUserRole, deleteUserById } from '@/lib/db/queries';
+import { updateUserRole, deleteUserById } from '@/app/users/actions';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 

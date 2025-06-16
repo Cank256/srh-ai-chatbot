@@ -1,4 +1,8 @@
-import { ArtifactKind } from '@/components/artifact';
+// Import Document type to get access to all possible kinds
+import { Document } from '@/lib/db/schema';
+
+// Define a type that matches the document kinds in the schema
+type DocumentKind = Document['kind'];
 
 export const artifactsPrompt = `
 Artifacts is a special user interface mode that helps users with writing, editing, and other content creation tasks. When artifact is open, it is on the right side of the screen, while the conversation is on the left side. When creating or updating documents, changes are reflected in real-time on the artifacts and visible to the user.
@@ -74,30 +78,35 @@ print(f"Factorial of 5 is: {factorial(5)}")
 \`\`\`
 `;
 
-export const sheetPrompt = `
-You are a spreadsheet creation assistant. Create a spreadsheet in csv format based on the given prompt. The spreadsheet should contain meaningful column headers and data.
-`;
 
 export const updateDocumentPrompt = (
   currentContent: string | null,
-  type: ArtifactKind,
-) =>
-  type === 'text'
-    ? `\
+  type: DocumentKind,
+) => {
+  switch (type) {
+    case 'text':
+      return `\
 Improve the following contents of the document based on the given prompt.
 
 ${currentContent}
-`
-    : type === 'code'
-      ? `\
-Improve the following code snippet based on the given prompt.
+`;
+    case 'code':
+      return `\
+Improve the following code based on the given prompt. Maintain the same language and functionality unless explicitly asked to change it.
 
 ${currentContent}
-`
-      : type === 'sheet'
-        ? `\
-Improve the following spreadsheet based on the given prompt.
+`;
+    case 'image':
+      return `\
+Describe how to improve the image based on the given prompt.
+`;
+    case 'sheet':
+      return `\
+Improve the following spreadsheet data based on the given prompt.
 
 ${currentContent}
-`
-        : '';
+`;
+    default:
+      return '';
+  }
+};

@@ -9,7 +9,8 @@ import type { UISuggestion } from '@/lib/editor/suggestions';
 import { CrossIcon, MessageIcon } from './icons';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
-import { ArtifactKind } from './artifact';
+// Import the Document type to get access to all possible kinds
+import { Document } from '@/lib/db/schema';
 
 export const Suggestion = ({
   suggestion,
@@ -18,7 +19,7 @@ export const Suggestion = ({
 }: {
   suggestion: UISuggestion;
   onApply: () => void;
-  artifactKind: ArtifactKind;
+  artifactKind: string; // Changed from ArtifactKind to string to accept all document kinds
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { width: windowWidth } = useWindowSize();
@@ -28,8 +29,7 @@ export const Suggestion = ({
       {!isExpanded ? (
         <motion.div
           className={cn('cursor-pointer text-muted-foreground p-1', {
-            'absolute -right-8': artifactKind === 'text',
-            'sticky top-0 right-4': artifactKind === 'code',
+            'absolute -right-8': artifactKind === 'text'
           })}
           onClick={() => {
             setIsExpanded(true);

@@ -18,9 +18,10 @@ export default auth((req) => {
     }
     
     // If user is not admin, redirect to main chat page
-    if (user?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/', req.url));
-    }
+  const userWithRole = user as any;
+  if (userWithRole?.role !== 'admin') {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
   }
   
   return NextResponse.next();

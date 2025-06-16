@@ -4,18 +4,22 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "tsx lib/db/migrate && next build",
+    "build": "next build",
+    "build:with-migrate": "tsx lib/db/migrate && next build",
+    "build:with-setup": "tsx scripts/setup-db.ts && next build",
     "start": "next start",
     "lint": "next lint && biome lint --write --unsafe",
     "lint:fix": "next lint --fix && biome lint --write --unsafe",
     "format": "biome format --write",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx lib/db/migrate.ts",
+    "db:setup": "tsx scripts/setup-db.ts",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
     "db:check": "drizzle-kit check",
-    "db:up": "drizzle-kit up"
+    "db:up": "drizzle-kit up",
+    "db:create-admin": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
     "@ai-sdk/fireworks": "^0.1.18",

@@ -1,20 +1,28 @@
 'use client';
 
 import { useMemo } from 'react';
-import { type Analytics } from '@/lib/db/schema';
 import { format } from 'date-fns';
 
+// Define a more flexible type for analytics data
+type AnalyticsData = {
+  date?: Date | string;
+  activeUsers?: number;
+  totalChats?: number;
+  totalMessages?: number;
+  [key: string]: any;
+};
+
 interface AnalyticsChartProps {
-  data: Analytics[];
+  data: AnalyticsData[] | any[] | undefined;
 }
 
-export function AnalyticsChart({ data }: AnalyticsChartProps) {
+export function AnalyticsChart({ data = [] }: AnalyticsChartProps) {
   const chartData = useMemo(() => {
     return data.slice(0, 30).reverse().map((item) => ({
-      date: format(new Date(item.date), 'MMM dd'),
-      users: item.activeUsers,
-      chats: item.totalChats,
-      messages: item.totalMessages,
+      date: item.date ? format(new Date(item.date), 'MMM dd') : 'Unknown',
+      users: item.activeUsers || 0,
+      chats: item.totalChats || 0,
+      messages: item.totalMessages || 0,
     }));
   }, [data]);
 

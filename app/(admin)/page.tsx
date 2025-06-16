@@ -1,34 +1,51 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { getSystemStats, getAnalytics } from '@/lib/db/queries';
+import { getSystemStats, getAnalytics } from '@/app/analytics/actions';
 import { Users, MessageSquare, FileText, Activity } from 'lucide-react';
 import { AnalyticsChart } from '@/components/analytics-chart';
 
+import { type SystemStats } from '@/app/analytics/actions';
+
 export default async function AdminDashboard() {
   const stats = await getSystemStats();
-  const analytics = await getAnalytics();
+  const analyticsResult = await getAnalytics();
+  
+  // Ensure analytics is an array and properly typed
+  const analyticsData = Array.isArray(analyticsResult) ? analyticsResult : [];
+  
+  // Define a type for analytics data
+  type AnalyticsItem = {
+    date: Date | string;
+    activeUsers?: number;
+    totalChats?: number;
+    totalMessages?: number;
+    [key: string]: any;
+  };
+  
+  // Cast the data to the correct type
+  const analytics = analyticsData as AnalyticsItem[];
 
   const statCards = [
     {
       title: 'Total Users',
-      value: stats.totalUsers,
+      value: stats.totalUsers || 0,
       description: 'Registered users',
       icon: Users,
     },
     {
       title: 'Total Chats',
-      value: stats.totalChats,
+      value: stats.totalChats || 0,
       description: 'Chat conversations',
       icon: MessageSquare,
     },
     {
       title: 'Total Messages',
-      value: stats.totalMessages,
+      value: stats.totalMessages || 0,
       description: 'Messages sent',
       icon: MessageSquare,
     },
     {
       title: 'Active Users Today',
-      value: stats.activeUsersToday,
+      value: stats.activeUsersToday || 0,
       description: 'Users active today',
       icon: Activity,
     },
@@ -39,7 +56,7 @@ export default async function AdminDashboard() {
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <p className="text-muted-foreground">
-          Overview of your application's performance and usage.
+          Overview of your application&apos;s performance and usage.
         </p>
       </div>
 

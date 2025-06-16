@@ -1,7 +1,9 @@
-import { getAnalytics, getSystemStats } from '@/lib/db/queries';
+import { getAnalytics, getSystemStats } from '@/app/analytics/actions';
 import { AnalyticsChart } from '@/components/analytics-chart';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, MessageSquare, FileText, Activity, TrendingUp, Clock } from 'lucide-react';
+
+import { type SystemStats } from '@/app/analytics/actions';
 
 export default async function AnalyticsPage() {
   const [analytics, stats] = await Promise.all([
@@ -9,58 +11,73 @@ export default async function AnalyticsPage() {
     getSystemStats()
   ]);
 
+  // Ensure analytics is an array and properly typed
+  const analyticsData = Array.isArray(analytics) ? analytics : [];
+  
+  // Explicitly type the analytics data to avoid type errors
+  type AnalyticsItem = {
+    activeUsers?: number;
+    totalChats?: number;
+    totalMessages?: number;
+    date?: Date;
+    [key: string]: any;
+  };
+
+  // Cast the data to the correct type
+  const typedAnalyticsData = analyticsData as AnalyticsItem[];
+
   // Calculate trends (simplified)
-  const recentAnalytics = analytics.slice(0, 7);
-  const previousAnalytics = analytics.slice(7, 14);
+  const recentAnalytics = typedAnalyticsData.slice(0, 7);
+  const previousAnalytics = typedAnalyticsData.slice(7, 14);
   
   const calculateTrend = (recent: number, previous: number) => {
     if (previous === 0) return recent > 0 ? 100 : 0;
     return ((recent - previous) / previous) * 100;
   };
 
-  const recentTotal = recentAnalytics.reduce((sum, item) => sum + item.activeUsers, 0);
-  const previousTotal = previousAnalytics.reduce((sum, item) => sum + item.activeUsers, 0);
+  const recentTotal = recentAnalytics.reduce((sum, item) => sum + (item?.activeUsers || 0), 0);
+  const previousTotal = previousAnalytics.reduce((sum, item) => sum + (item?.activeUsers || 0), 0);
   const userTrend = calculateTrend(recentTotal, previousTotal);
 
   const statCards = [
     {
       title: 'Total Users',
-      value: stats.totalUsers,
+      value: stats.totalUsers || 0,
       description: 'All registered users',
       icon: Users,
       trend: null,
     },
     {
       title: 'Active Users (7 days)',
-      value: recentTotal,
+      value: recentTotal || 0,
       description: 'Users active in last 7 days',
       icon: Activity,
-      trend: userTrend,
+      trend: userTrend || 0,
     },
     {
       title: 'Total Conversations',
-      value: stats.totalChats,
+      value: stats.totalChats || 0,
       description: 'All chat conversations',
       icon: MessageSquare,
       trend: null,
     },
     {
       title: 'Total Messages',
-      value: stats.totalMessages,
+      value: stats.totalMessages || 0,
       description: 'All messages sent',
       icon: MessageSquare,
       trend: null,
     },
     {
       title: 'Documents Created',
-      value: stats.totalDocuments,
+      value: stats.totalDocuments || 0,
       description: 'All created documents',
       icon: FileText,
       trend: null,
     },
     {
       title: 'Active Today',
-      value: stats.activeUsersToday,
+      value: stats.activeUsersToday || 0,
       description: 'Users active today',
       icon: Clock,
       trend: null,
@@ -72,7 +89,7 @@ export default async function AnalyticsPage() {
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Analytics</h2>
         <p className="text-muted-foreground">
-          Detailed insights into your application's usage and performance.
+          Detailed insights into your application&apos;s usage and performance.
         </p>
       </div>
 
@@ -172,7 +189,7 @@ export default async function AnalyticsPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">API Response Time</span>
-                <span className="text-sm font-medium text-green-600">< 200ms</span>
+                <span className="text-sm font-medium text-green-600">&lt; 200ms</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Uptime</span>
@@ -180,7 +197,7 @@ export default async function AnalyticsPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Error Rate</span>
-                <span className="text-sm font-medium text-green-600">< 0.1%</span>
+                <span className="text-sm font-medium text-green-600">&lt; 0.1%</span>
               </div>
             </div>
           </CardContent>

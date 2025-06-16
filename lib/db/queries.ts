@@ -518,18 +518,58 @@ export async function getActiveApiKey(provider: 'openai' | 'gemini') {
 // Analytics functions
 export async function getAnalytics(startDate?: Date, endDate?: Date) {
   try {
-    let query = db.select().from(analytics);
+    // Start with a base query
+    let baseQuery = db.select().from(analytics);
     
-    if (startDate && endDate) {
-      query = query.where(and(
-        gte(analytics.date, startDate),
-        gte(endDate, analytics.date)
-      ));
+    // Build conditions array
+    const conditions: string[] = [];
+    const params: any[] = [];
+    
+    if (startDate) {
+      conditions.push('date >= $1');
+      params.push(startDate);
     }
     
-    return await query.orderBy(desc(analytics.date));
+    if (endDate) {
+      conditions.push('date <= $' + (params.length + 1));
+      params.push(endDate);
+    }
+    
+    // Apply conditions if any exist
+    let result;
+    if (conditions.length > 0) {
+      // For simplicity, let's use the drizzle query builder instead of raw SQL
+      if (startDate && endDate) {
+        result = await db
+          .select()
+          .from(analytics)
+          .where(
+            and(
+              sql`${analytics.date} >= ${startDate}`,
+              sql`${analytics.date} <= ${endDate}`
+            )
+          )
+          .orderBy(desc(analytics.date));
+      } else if (startDate) {
+        result = await db
+          .select()
+          .from(analytics)
+          .where(sql`${analytics.date} >= ${startDate}`)
+          .orderBy(desc(analytics.date));
+      } else if (endDate) {
+        result = await db
+          .select()
+          .from(analytics)
+          .where(sql`${analytics.date} <= ${endDate}`)
+          .orderBy(desc(analytics.date));
+      }
+    } else {
+      result = await baseQuery.orderBy(desc(analytics.date));
+    }
+    
+    return result;
   } catch (error) {
-    console.error('Failed to get analytics from database');
+    console.error('Failed to get analytics from database:', error);
     throw error;
   }
 }
