@@ -1,5 +1,5 @@
 import { smoothStream, streamText } from 'ai';
-import { google } from '@ai-sdk/google';
+import { getActiveProvider } from '@/lib/ai/models';
 import { createDocumentHandler } from '@/lib/artifacts/server';
 import { updateDocumentPrompt } from '@/lib/ai/prompts';
 
@@ -8,8 +8,9 @@ export const textDocumentHandler = createDocumentHandler<'text'>({
   onCreateDocument: async ({ title, dataStream }) => {
     let draftContent = '';
 
+    const provider = await getActiveProvider();
     const { fullStream } = streamText({
-      model: google('gemini-2.0-flash-001'),
+      model: provider('gemini-2.0-flash-001'),
       system:
         'Write about the given topic. Markdown is supported. Use headings wherever appropriate.',
       experimental_transform: smoothStream({ chunking: 'word' }),
@@ -36,8 +37,9 @@ export const textDocumentHandler = createDocumentHandler<'text'>({
   onUpdateDocument: async ({ document, description, dataStream }) => {
     let draftContent = '';
 
+    const provider = await getActiveProvider();
     const { fullStream } = streamText({
-      model: google('gemini-2.0-flash-001'),
+      model: provider('gemini-2.0-flash-001'),
       system: updateDocumentPrompt(document.content, 'text'),
       experimental_transform: smoothStream({ chunking: 'word' }),
       prompt: description,

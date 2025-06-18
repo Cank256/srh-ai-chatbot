@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,18 +20,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { createAiModel } from '@/app/models/actions';
+import { updateAiModel } from '@/app/models/actions';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
+import { type AiModel } from '@/lib/db/schema';
 
-interface AddModelDialogProps {
-  children: React.ReactNode;
+interface EditModelDialogProps {
+  model: AiModel | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function AddModelDialog({ children }: AddModelDialogProps) {
-  const [open, setOpen] = useState(false);
+export function EditModelDialog({ model, open, onOpenChange }: EditModelDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
   const [formData, setFormData] = useState({
     provider: '',
     modelId: '',
@@ -41,8 +43,34 @@ export function AddModelDialog({ children }: AddModelDialogProps) {
     apiKeyName: '',
     apiKey: '',
   });
-  const [showApiKey, setShowApiKey] = useState(false);
   const router = useRouter();
+
+  // Decrypt API key for editing (in production, use proper decryption)
+  const decryptApiKey = (encryptedKey: string): string => {
+    try {
+      return Buffer.from(encryptedKey, 'base64').toString();
+    } catch {
+      return '';
+    }
+  };
+
+  // Encrypt API key for storage (in production, use proper encryption)
+  const encryptApiKey = (key: string): string => {
+    return Buffer.from(key).toString('base64');
+  };
+
+  useEffect(() => {
+    if (model) {
+      setFormData({
+        provider: model.provider,
+        modelId: model.modelId,
+        modelName: model.modelName,
+        description: model.description || '',
+        apiKeyName: model.apiKeyName,
+        apiKey: decryptApiKey(model.encryptedApiKey),
+      });
+    }
+  }, [model]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,29 +80,24 @@ export function AddModelDialog({ children }: AddModelDialogProps) {
       return;
     }
 
-    // Simple encryption function (in production, use proper encryption)
-    const encryptApiKey = (key: string): string => {
-      return Buffer.from(key).toString('base64');
-    };
+    if (!model) return;
 
     setIsLoading(true);
     try {
-      await createAiModel({
+      await updateAiModel(model.id, {
         provider: formData.provider as 'openai' | 'gemini',
         modelId: formData.modelId,
         modelName: formData.modelName,
         description: formData.description || null,
         apiKeyName: formData.apiKeyName,
         encryptedApiKey: encryptApiKey(formData.apiKey),
-        isActive: false,
       });
       
-      toast.success('Model added successfully');
-      setOpen(false);
-      setFormData({ provider: '', modelId: '', modelName: '', description: '', apiKeyName: '', apiKey: '' });
+      toast.success('Model updated successfully');
+      onOpenChange(false);
       router.refresh();
     } catch (error) {
-      toast.error('Failed to add model');
+      toast.error('Failed to update model');
     } finally {
       setIsLoading(false);
     }
@@ -109,15 +132,12 @@ export function AddModelDialog({ children }: AddModelDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add AI Model</DialogTitle>
+          <DialogTitle>Edit AI Model</DialogTitle>
           <DialogDescription>
-            Configure a new AI model for the chatbot.
+            Update the AI model configuration and API key.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -230,11 +250,11 @@ export function AddModelDialog({ children }: AddModelDialogProps) {
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Adding...' : 'Add Model'}
+              {isLoading ? 'Updating...' : 'Update Model'}
             </Button>
           </DialogFooter>
         </form>

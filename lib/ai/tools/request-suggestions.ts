@@ -4,7 +4,7 @@ import { DataStreamWriter, streamObject, tool } from 'ai';
 import { getDocumentById, saveSuggestions } from '@/lib/db/queries';
 import { Suggestion } from '@/lib/db/schema';
 import { generateUUID } from '@/lib/utils';
-import { google } from '@ai-sdk/google';
+import { getActiveProvider } from '@/lib/ai/models';
 
 interface RequestSuggestionsProps {
   session: Session;
@@ -43,8 +43,9 @@ export const requestSuggestions = ({
 
       type SuggestionType = z.infer<typeof suggestionSchema>;
 
+      const provider = await getActiveProvider();
       const { elementStream } = streamObject({
-        model: google('gemini-2.0-flash-001'),
+        model: provider('gemini-2.0-flash-001'),
         system:
           'You are a help writing assistant. Given a piece of writing, please offer suggestions to improve the piece of writing and describe the change. It is very important for the edits to contain full sentences instead of just words. Max 5 suggestions.',
         prompt: document.content,

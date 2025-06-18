@@ -33,6 +33,7 @@ import { format } from 'date-fns';
 import { updateAiModel, deleteAiModel } from '@/app/models/actions';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { EditModelDialog } from '@/components/edit-model-dialog';
 
 interface ModelsTableProps {
   models: AiModel[];
@@ -41,6 +42,7 @@ interface ModelsTableProps {
 export function ModelsTable({ models }: ModelsTableProps) {
   const [selectedModel, setSelectedModel] = useState<AiModel | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -91,6 +93,7 @@ export function ModelsTable({ models }: ModelsTableProps) {
               <TableHead>Model Name</TableHead>
               <TableHead>Provider</TableHead>
               <TableHead>Model ID</TableHead>
+              <TableHead>API Key</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created</TableHead>
               <TableHead className="w-[70px]">Actions</TableHead>
@@ -99,7 +102,7 @@ export function ModelsTable({ models }: ModelsTableProps) {
           <TableBody>
             {models.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                   No AI models configured. Add your first model to get started.
                 </TableCell>
               </TableRow>
@@ -122,6 +125,7 @@ export function ModelsTable({ models }: ModelsTableProps) {
                     </Badge>
                   </TableCell>
                   <TableCell className="font-mono text-sm">{model.modelId}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{model.apiKeyName}</TableCell>
                   <TableCell>
                     <Badge variant={model.isActive ? 'default' : 'secondary'}>
                       {model.isActive ? (
@@ -143,6 +147,16 @@ export function ModelsTable({ models }: ModelsTableProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSelectedModel(model);
+                            setShowEditDialog(true);
+                          }}
+                          disabled={isLoading}
+                        >
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleToggleActive(model.id, model.isActive)}
                           disabled={isLoading}
@@ -196,6 +210,12 @@ export function ModelsTable({ models }: ModelsTableProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <EditModelDialog
+        model={selectedModel}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+      />
     </>
   );
 }

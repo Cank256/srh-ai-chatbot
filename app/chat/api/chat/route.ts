@@ -6,8 +6,8 @@ import {
 } from 'ai';
 
 import { auth } from '@/app/(auth)/auth';
-import { google } from '@ai-sdk/google';
 import { systemPrompt } from '@/lib/ai/prompts';
+import { getActiveProvider } from '@/lib/ai/models';
 import {
   deleteChatById,
   getChatById,
@@ -62,9 +62,10 @@ export async function POST(request: Request) {
   });
 
   return createDataStreamResponse({
-    execute: (dataStream) => {
+    execute: async (dataStream) => {
+      const provider = await getActiveProvider();
       const result = streamText({
-        model: google(selectedChatModel),
+        model: provider(selectedChatModel),
         system: systemPrompt({ selectedChatModel }),
         messages,
         maxSteps: 5,

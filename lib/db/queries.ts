@@ -30,9 +30,32 @@ import { ArtifactKind } from '@/components/artifact';
 // use the Drizzle adapter for Auth.js / NextAuth
 // https://authjs.dev/reference/adapter/drizzle
 
+// Database connection with error handling
+if (!process.env.POSTGRES_URL) {
+  throw new Error('POSTGRES_URL environment variable is not set');
+}
+
 // biome-ignore lint: Forbidden non-null assertion.
-const client = postgres(process.env.POSTGRES_URL!);
+const client = postgres(process.env.POSTGRES_URL!, {
+  onnotice: () => {}, // Suppress notices
+  max: 10, // Maximum number of connections
+  idle_timeout: 20, // Close idle connections after 20 seconds
+  connect_timeout: 10, // Connection timeout in seconds
+});
 const db = drizzle(client);
+
+// Test database connection
+export async function testDatabaseConnection() {
+  try {
+    console.log('Testing database connection...');
+    await db.execute(sql`SELECT 1`);
+    console.log('Database connection successful');
+    return true;
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    return false;
+  }
+}
 
 export async function getUser(email: string): Promise<Array<User>> {
   try {
@@ -411,9 +434,17 @@ export async function deleteUserById(userId: string) {
 // AI Model management
 export async function getAllAiModels() {
   try {
-    return await db.select().from(aiModel).orderBy(desc(aiModel.createdAt));
+    console.log('Attempting to fetch AI models from database...');
+    const result = await db.select().from(aiModel).orderBy(desc(aiModel.createdAt));
+    console.log(`Successfully fetched ${result.length} AI models`);
+    return result;
   } catch (error) {
-    console.error('Failed to get AI models from database');
+    console.error('Failed to get AI models from database:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined
+    });
     throw error;
   }
 }
@@ -448,6 +479,18 @@ export async function deleteAiModel(id: string) {
     return await db.delete(aiModel).where(eq(aiModel.id, id));
   } catch (error) {
     console.error('Failed to delete AI model from database');
+    throw error;
+  }
+}
+
+export async function getActiveAiModel() {
+  try {
+    const result = await db.select().from(aiModel)
+      .where(eq(aiModel.isActive, true))
+      .limit(1);
+    return result[0] || null;
+  } catch (error) {
+    console.error('Failed to get active AI model from database');
     throw error;
   }
 }

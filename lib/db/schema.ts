@@ -126,6 +126,8 @@ export const aiModel = pgTable('AiModel', {
   modelId: varchar('modelId', { length: 100 }).notNull(),
   modelName: varchar('modelName', { length: 100 }).notNull(),
   description: text('description'),
+  apiKeyName: varchar('apiKeyName', { length: 100 }).notNull(),
+  encryptedApiKey: text('encryptedApiKey').notNull(),
   isActive: boolean('isActive').notNull().default(false),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),

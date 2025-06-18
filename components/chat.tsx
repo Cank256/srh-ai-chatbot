@@ -43,6 +43,7 @@ export function Chat({
     reload,
   } = useChat({
     id,
+    api: '/chat/api/chat', // Explicitly set the API endpoint
     body: { id, selectedChatModel: selectedChatModel },
     initialMessages,
     experimental_throttle: 100,

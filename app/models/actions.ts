@@ -11,6 +11,8 @@ export async function createAiModel(modelData: {
   modelId: string;
   modelName: string;
   description: string | null;
+  apiKeyName: string;
+  encryptedApiKey: string;
   isActive: boolean;
 }) {
   try {
@@ -21,7 +23,15 @@ export async function createAiModel(modelData: {
   }
 }
 
-export async function updateAiModel(modelId: string, data: { isActive?: boolean }) {
+export async function updateAiModel(modelId: string, data: { 
+  isActive?: boolean;
+  provider?: 'openai' | 'gemini';
+  modelId?: string;
+  modelName?: string;
+  description?: string | null;
+  apiKeyName?: string;
+  encryptedApiKey?: string;
+}) {
   try {
     return await dbUpdateAiModel(modelId, data);
   } catch (error) {
