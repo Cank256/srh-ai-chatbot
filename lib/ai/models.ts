@@ -1,4 +1,5 @@
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { google } from '@ai-sdk/google';
 import { getActiveAiModel } from '@/lib/db/queries';
 
@@ -28,6 +29,63 @@ function decryptApiKey(encryptedKey: string): string {
   }
 }
 
+export async function getActiveModel() {
+  try {
+    const activeModel = await getActiveAiModel();
+    if (!activeModel) {
+      console.warn('No active AI model found, falling back to default model');
+      return google('gemini-2.0-flash-001');
+    }
+
+    const provider = activeModel.provider;
+    const decryptedApiKey = decryptApiKey(activeModel.encryptedApiKey);
+    const modelName = activeModel.modelName;
+    
+    if (provider === 'openai') {
+      const openaiProvider = createOpenAI({ apiKey: decryptedApiKey });
+      return openaiProvider(modelName);
+    } else if (provider === 'gemini') {
+      const googleProvider = createGoogleGenerativeAI({ apiKey: decryptedApiKey });
+      return googleProvider(modelName);
+    }
+    
+    // Fallback to default model
+    console.warn('Unknown provider, falling back to default model');
+    return google('gemini-2.0-flash-001');
+  } catch (error) {
+    console.error('Error getting active model:', error);
+    return google('gemini-2.0-flash-001');
+  }
+}
+
+export async function getModelByName(modelName: string) {
+  try {
+    const activeModel = await getActiveAiModel();
+    if (!activeModel) {
+      console.warn('No active AI model found, falling back to Google provider');
+      return google(modelName);
+    }
+
+    const provider = activeModel.provider;
+    const decryptedApiKey = decryptApiKey(activeModel.encryptedApiKey);
+    
+    if (provider === 'openai') {
+      const openaiProvider = createOpenAI({ apiKey: decryptedApiKey });
+      return openaiProvider(modelName);
+    } else if (provider === 'gemini') {
+      const googleProvider = createGoogleGenerativeAI({ apiKey: decryptedApiKey });
+      return googleProvider(modelName);
+    }
+    
+    // Fallback to Google provider
+    console.warn('Unknown provider, falling back to Google provider');
+    return google(modelName);
+  } catch (error) {
+    console.error('Error getting model by name:', error);
+    return google(modelName);
+  }
+}
+
 export async function getActiveProvider() {
   try {
     const activeModel = await getActiveAiModel();
@@ -40,9 +98,9 @@ export async function getActiveProvider() {
     const decryptedApiKey = decryptApiKey(activeModel.encryptedApiKey);
     
     if (provider === 'openai') {
-      return openai({ apiKey: decryptedApiKey });
+      return createOpenAI({ apiKey: decryptedApiKey });
     } else if (provider === 'gemini') {
-      return google({ apiKey: decryptedApiKey });
+      return createGoogleGenerativeAI({ apiKey: decryptedApiKey });
     }
     
     // Fallback to Google provider

@@ -26,7 +26,7 @@ export function ModelSelector({
     useOptimistic(selectedModelId);
 
   const selectedChatModel = useMemo(
-    () => chatModels.find((chatModel) => chatModel.id === optimisticModelId),
+    () => chatModels.find((chatModel) => chatModel.name === optimisticModelId),
     [optimisticModelId],
   );
 
@@ -46,26 +46,26 @@ export function ModelSelector({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[300px]">
         {chatModels.map((chatModel) => {
-          const { id } = chatModel;
+          const { name } = chatModel;
 
           return (
             <DropdownMenuItem
-              key={id}
+              key={name}
               onSelect={() => {
                 setOpen(false);
 
                 startTransition(() => {
-                  setOptimisticModelId(id);
-                  saveChatModelAsCookie(id);
+                  setOptimisticModelId(name);
+                  saveChatModelAsCookie(name);
                 });
               }}
               className="gap-4 group/item flex flex-row justify-between items-center"
-              data-active={id === optimisticModelId}
+              data-active={name === optimisticModelId}
             >
               <div className="flex flex-col gap-1 items-start">
                 <div>{chatModel.name}</div>
                 <div className="text-xs text-muted-foreground">
-                  {chatModel.description}
+                  {chatModel.label}
                 </div>
               </div>
 

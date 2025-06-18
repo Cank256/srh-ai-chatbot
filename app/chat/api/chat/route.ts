@@ -7,7 +7,7 @@ import {
 
 import { auth } from '@/app/(auth)/auth';
 import { systemPrompt } from '@/lib/ai/prompts';
-import { getActiveProvider } from '@/lib/ai/models';
+import { getModelByName } from '@/lib/ai/models';
 import {
   deleteChatById,
   getChatById,
@@ -63,9 +63,9 @@ export async function POST(request: Request) {
 
   return createDataStreamResponse({
     execute: async (dataStream) => {
-      const provider = await getActiveProvider();
+      const model = await getModelByName(selectedChatModel);
       const result = streamText({
-        model: provider(selectedChatModel),
+        model: model,
         system: systemPrompt({ selectedChatModel }),
         messages,
         maxSteps: 5,
