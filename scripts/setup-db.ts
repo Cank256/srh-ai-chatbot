@@ -11,7 +11,7 @@ import { user, systemSettings } from '../lib/db/schema';
 const execAsync = promisify(exec);
 
 config({
-  path: '.env',
+  path: '.env.local',
 });
 
 async function setupDatabase() {

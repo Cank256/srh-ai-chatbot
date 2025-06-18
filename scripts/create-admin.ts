@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm';
 import { user } from '../lib/db/schema';
 
 config({
-  path: '.env',
+  path: '.env.local',
 });
 
 async function createAdminUser() {
