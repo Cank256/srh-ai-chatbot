@@ -71,6 +71,10 @@ export async function POST(request: Request) {
         system: await systemPrompt({ selectedChatModel }),
         messages,
         maxSteps: 5,
+        temperature: 0.7,
+        topP: 0.9,
+        frequencyPenalty: 0.5,
+        presencePenalty: 0.3,
         experimental_activeTools:
           selectedChatModel === 'chat-model-reasoning'
             ? []
