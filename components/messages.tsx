@@ -5,6 +5,7 @@ import { Overview } from './overview';
 import { memo } from 'react';
 import { Vote } from '@/lib/db/schema';
 import equal from 'fast-deep-equal';
+import type { User } from 'next-auth';
 
 interface MessagesProps {
   chatId: string;
@@ -19,6 +20,7 @@ interface MessagesProps {
   ) => Promise<string | null | undefined>;
   isReadonly: boolean;
   isArtifactVisible: boolean;
+  user?: User;
 }
 
 function PureMessages({
@@ -29,6 +31,7 @@ function PureMessages({
   setMessages,
   reload,
   isReadonly,
+  user,
 }: MessagesProps) {
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
@@ -54,6 +57,7 @@ function PureMessages({
           setMessages={setMessages}
           reload={reload}
           isReadonly={isReadonly}
+          user={user}
         />
       ))}
 

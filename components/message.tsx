@@ -4,6 +4,7 @@ import type { ChatRequestOptions, Message } from 'ai';
 import cx from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useMemo, useState } from 'react';
+import type { User } from 'next-auth';
 
 import type { Vote } from '@/lib/db/schema';
 
@@ -34,6 +35,7 @@ const PurePreviewMessage = ({
   setMessages,
   reload,
   isReadonly,
+  user,
 }: {
   chatId: string;
   message: Message;
@@ -46,6 +48,7 @@ const PurePreviewMessage = ({
     chatRequestOptions?: ChatRequestOptions,
   ) => Promise<string | null | undefined>;
   isReadonly: boolean;
+  user?: User;
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
@@ -202,6 +205,7 @@ const PurePreviewMessage = ({
                 message={message}
                 vote={vote}
                 isLoading={isLoading}
+                user={user}
               />
             )}
           </div>
