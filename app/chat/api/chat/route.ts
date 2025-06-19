@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       console.log('DEBUG: model =', model);
       const result = streamText({
         model: model,
-        system: systemPrompt({ selectedChatModel }),
+        system: await systemPrompt({ selectedChatModel }),
         messages,
         maxSteps: 5,
         experimental_activeTools:

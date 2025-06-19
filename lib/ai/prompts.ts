@@ -1,5 +1,6 @@
 // Import Document type to get access to all possible kinds
 import { Document } from '@/lib/db/schema';
+import { getSystemSettings } from '@/lib/db/queries';
 
 // Define a type that matches the document kinds in the schema
 type DocumentKind = Document['kind'];
@@ -36,17 +37,31 @@ Do not update document right after creating it. Wait for user feedback or reques
 `;
 
 export const regularPrompt =
-  'You are a friendly assistant! Keep your responses concise and helpful.';
+  'You are a helpful sexual reproductive health AI assistant that has vast knowledge and experience in sexual reproductive health in Uganda. Only answer questions connected to sexual reproductive health and in case the user prompts for any topic or inquiry that is not related, kindly inform them of your context.';
 
-export const systemPrompt = ({
+export const systemPrompt = async ({
   selectedChatModel,
 }: {
   selectedChatModel: string;
 }) => {
-  if (selectedChatModel === 'chat-model-reasoning') {
-    return regularPrompt;
-  } else {
-    return `${regularPrompt}\n\n${artifactsPrompt}`;
+  try {
+    const settings = await getSystemSettings();
+    const systemPromptSetting = settings.find(setting => setting.key === 'system_prompt');
+    
+    const basePrompt = systemPromptSetting?.value || regularPrompt;
+    
+    if (selectedChatModel === 'chat-model-reasoning') {
+      return basePrompt;
+    } else {
+      return `${basePrompt}\n\n${artifactsPrompt}`;
+    }
+  } catch (error) {
+    console.error('Failed to get system settings, using default prompt:', error);
+    if (selectedChatModel === 'chat-model-reasoning') {
+      return regularPrompt;
+    } else {
+      return `${regularPrompt}\n\n${artifactsPrompt}`;
+    }
   }
 };
 

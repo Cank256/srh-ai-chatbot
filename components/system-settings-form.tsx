@@ -26,7 +26,7 @@ export function SystemSettingsForm({ settings, availableModels }: SystemSettings
     default_model: settings.default_model || 'gpt-3.5-turbo',
     max_tokens: settings.max_tokens || '4000',
     temperature: settings.temperature || '0.7',
-    system_prompt: settings.system_prompt || 'You are a helpful AI assistant.',
+    system_prompt: settings.system_prompt || 'You are a helpful sexual reproductive health AI assistant that has vast knowledge and experience in sexual reproductive health in Uganda. Only answer questions connected to sexual reproductive health and in case the user prompts for any topic or inquiry that is not related, kindly inform them of your context.',
     session_timeout: settings.session_timeout || '24',
     rate_limit: settings.rate_limit || '100',
     enable_analytics: settings.enable_analytics || 'true',
