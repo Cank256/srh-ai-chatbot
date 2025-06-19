@@ -1,6 +1,5 @@
 import { compare } from 'bcrypt-ts';
-import NextAuth, { type Session } from 'next-auth';
-import { type User as NextAuthUser } from 'next-auth';
+import NextAuth, { type Session, type User as NextAuthUser } from 'next-auth';
 
 // Extend the NextAuth User type to include role
 type User = NextAuthUser & { role?: string };
