@@ -1,5 +1,5 @@
 import { createOpenAI } from '@ai-sdk/openai';
-import { createGoogleGenerativeAI,google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI, google } from '@ai-sdk/google';
 import { getActiveAiModel } from '@/lib/db/queries';
 
 export const chatModels = [
