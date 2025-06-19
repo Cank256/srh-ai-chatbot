@@ -67,7 +67,7 @@ export function AnalyticsChart({ data = [] }: AnalyticsChartProps) {
                   title={`Messages: ${item.messages}`}
                 />
               </div>
-              <span className="text-xs text-muted-foreground transform -rotate-45 origin-center">
+              <span className="text-xs text-muted-foreground -rotate-45 origin-center">
                 {item.date}
               </span>
             </div>
@@ -77,15 +77,15 @@ export function AnalyticsChart({ data = [] }: AnalyticsChartProps) {
       
       <div className="flex items-center justify-center gap-4 mt-4 text-xs">
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-blue-500 rounded" />
+          <div className="size-3 bg-blue-500 rounded" />
           <span>Users</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-green-500 rounded" />
+          <div className="size-3 bg-green-500 rounded" />
           <span>Chats</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-purple-500 rounded" />
+          <div className="size-3 bg-purple-500 rounded" />
           <span>Messages</span>
         </div>
       </div>

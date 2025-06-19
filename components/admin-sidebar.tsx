@@ -87,8 +87,8 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
     <Sidebar className="border-r">
       <SidebarHeader className="border-b px-6 py-4">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Settings className="h-4 w-4" />
+          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Settings className="size-4" />
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold">Admin Panel</span>
@@ -111,7 +111,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton asChild isActive={isActive}>
                         <Link href={item.href} className="flex items-center gap-2">
-                          <Icon className="h-4 w-4" />
+                          <Icon className="size-4" />
                           <span>{item.title}</span>
                         </Link>
                       </SidebarMenuButton>
@@ -134,9 +134,9 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
             variant="ghost"
             size="sm"
             onClick={() => signOut({ callbackUrl: '/login' })}
-            className="h-8 w-8 p-0"
+            className="size-8 p-0"
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="size-4" />
           </Button>
         </div>
         <Link href="/chat">

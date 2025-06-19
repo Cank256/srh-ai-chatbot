@@ -20,14 +20,14 @@ export default async function ApiKeysPage() {
         </div>
         <AddApiKeyDialog>
           <Button>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             Add API Key
           </Button>
         </AddApiKeyDialog>
       </div>
 
       <Alert>
-        <AlertTriangle className="h-4 w-4" />
+        <AlertTriangle className="size-4" />
         <AlertDescription>
           API keys are encrypted and stored securely. Only one key per provider can be active at a time.
         </AlertDescription>

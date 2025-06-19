@@ -221,9 +221,9 @@ export function AddModelDialog({ children }: AddModelDialogProps) {
                 onClick={() => setShowApiKey(!showApiKey)}
               >
                 {showApiKey ? (
-                  <EyeOff className="h-4 w-4" />
+                  <EyeOff className="size-4" />
                 ) : (
-                  <Eye className="h-4 w-4" />
+                  <Eye className="size-4" />
                 )}
               </Button>
             </div>

@@ -102,7 +102,7 @@ export default async function AnalyticsPage() {
                 <CardTitle className="text-sm font-medium">
                   {card.title}
                 </CardTitle>
-                <Icon className="h-4 w-4 text-muted-foreground" />
+                <Icon className="size-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{card.value}</div>
@@ -114,7 +114,7 @@ export default async function AnalyticsPage() {
                     <div className={`flex items-center text-xs ${
                       card.trend >= 0 ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      <TrendingUp className="h-3 w-3 mr-1" />
+                      <TrendingUp className="size-3 mr-1" />
                       {card.trend >= 0 ? '+' : ''}{card.trend.toFixed(1)}%
                     </div>
                   )}
@@ -151,21 +151,21 @@ export default async function AnalyticsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                  <div className="size-2 bg-blue-500 rounded-full" />
                   <span className="text-sm">Chat Conversations</span>
                 </div>
                 <span className="text-sm font-medium">{stats.totalChats}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full" />
+                  <div className="size-2 bg-green-500 rounded-full" />
                   <span className="text-sm">Document Creation</span>
                 </div>
                 <span className="text-sm font-medium">{stats.totalDocuments}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full" />
+                  <div className="size-2 bg-purple-500 rounded-full" />
                   <span className="text-sm">Message Exchanges</span>
                 </div>
                 <span className="text-sm font-medium">{stats.totalMessages}</span>

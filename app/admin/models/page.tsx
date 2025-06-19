@@ -19,7 +19,7 @@ export default async function ModelsPage() {
         </div>
         <AddModelDialog>
           <Button>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             Add Model
           </Button>
         </AddModelDialog>

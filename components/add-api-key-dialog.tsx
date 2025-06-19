@@ -155,9 +155,9 @@ export function AddApiKeyDialog({ children }: AddApiKeyDialogProps) {
                 onClick={() => setShowKey(!showKey)}
               >
                 {showKey ? (
-                  <EyeOff className="h-4 w-4" />
+                  <EyeOff className="size-4" />
                 ) : (
-                  <Eye className="h-4 w-4" />
+                  <Eye className="size-4" />
                 )}
               </Button>
             </div>

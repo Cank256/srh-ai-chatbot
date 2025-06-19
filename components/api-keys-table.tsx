@@ -115,9 +115,9 @@ export function ApiKeysTable({ apiKeys }: ApiKeysTableProps) {
                   <TableCell>
                     <Badge variant={apiKey.isActive ? 'default' : 'secondary'}>
                       {apiKey.isActive ? (
-                        <CheckCircle className="w-3 h-3 mr-1" />
+                        <CheckCircle className="size-3 mr-1" />
                       ) : (
-                        <XCircle className="w-3 h-3 mr-1" />
+                        <XCircle className="size-3 mr-1" />
                       )}
                       {apiKey.isActive ? 'Active' : 'Inactive'}
                     </Badge>
@@ -131,8 +131,8 @@ export function ApiKeysTable({ apiKeys }: ApiKeysTableProps) {
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
+                        <Button variant="ghost" className="size-8 p-0">
+                          <MoreHorizontal className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -141,9 +141,9 @@ export function ApiKeysTable({ apiKeys }: ApiKeysTableProps) {
                           disabled={isLoading}
                         >
                           {apiKey.isActive ? (
-                            <XCircle className="mr-2 h-4 w-4" />
+                            <XCircle className="mr-2 size-4" />
                           ) : (
-                            <CheckCircle className="mr-2 h-4 w-4" />
+                            <CheckCircle className="mr-2 size-4" />
                           )}
                           {apiKey.isActive ? 'Deactivate' : 'Activate'}
                         </DropdownMenuItem>
@@ -155,7 +155,7 @@ export function ApiKeysTable({ apiKeys }: ApiKeysTableProps) {
                           disabled={isLoading}
                           className="text-red-600"
                         >
-                          <Trash2 className="mr-2 h-4 w-4" />
+                          <Trash2 className="mr-2 size-4" />
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>

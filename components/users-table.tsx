@@ -94,9 +94,9 @@ export function UsersTable({ users }: UsersTableProps) {
                 <TableCell>
                   <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
                     {user.role === 'admin' ? (
-                      <Shield className="w-3 h-3 mr-1" />
+                      <Shield className="size-3 mr-1" />
                     ) : (
-                      <UserIcon className="w-3 h-3 mr-1" />
+                      <UserIcon className="size-3 mr-1" />
                     )}
                     {user.role}
                   </Badge>
@@ -110,8 +110,8 @@ export function UsersTable({ users }: UsersTableProps) {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
+                      <Button variant="ghost" className="size-8 p-0">
+                        <MoreHorizontal className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -120,7 +120,7 @@ export function UsersTable({ users }: UsersTableProps) {
                           onClick={() => handleRoleChange(user.id, 'admin')}
                           disabled={isLoading}
                         >
-                          <Shield className="mr-2 h-4 w-4" />
+                          <Shield className="mr-2 size-4" />
                           Make Admin
                         </DropdownMenuItem>
                       ) : (
@@ -128,7 +128,7 @@ export function UsersTable({ users }: UsersTableProps) {
                           onClick={() => handleRoleChange(user.id, 'user')}
                           disabled={isLoading}
                         >
-                          <UserIcon className="mr-2 h-4 w-4" />
+                          <UserIcon className="mr-2 size-4" />
                           Make User
                         </DropdownMenuItem>
                       )}
@@ -140,7 +140,7 @@ export function UsersTable({ users }: UsersTableProps) {
                         disabled={isLoading}
                         className="text-red-600"
                       >
-                        <Trash2 className="mr-2 h-4 w-4" />
+                        <Trash2 className="mr-2 size-4" />
                         Delete User
                       </DropdownMenuItem>
                     </DropdownMenuContent>
