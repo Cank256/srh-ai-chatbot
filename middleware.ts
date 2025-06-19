@@ -3,7 +3,10 @@ import type { NextRequest } from 'next/server';
 import NextAuth from 'next-auth';
 import { authConfig } from '@/app/(auth)/auth.config';
 
-const { auth } = NextAuth(authConfig);
+const { auth } = NextAuth({
+  ...authConfig,
+  trustHost: true,
+});
 
 // Since we can't use database queries in the Edge runtime,
 // we'll let the admin layout handle the role check
