@@ -1,6 +1,6 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI, google } from '@ai-sdk/google';
-import { getActiveAiModel } from '@/lib/db/queries';
+import { getActiveAiModel, getSystemSettings } from '@/lib/db/queries';
 
 export const chatModels = [
   {
@@ -11,12 +11,23 @@ export const chatModels = [
   },
 ];
 
-export function getDefaultChatModel() {
-  const defaultModel = chatModels.find((model) => model.default);
-  if (!defaultModel) {
-    throw new Error('No default chat model found');
+export async function getDefaultChatModel() {
+  try {
+    const settings = await getSystemSettings();
+    const defaultModelSetting = settings.find(setting => setting.key === 'default_model');
+    
+    if (defaultModelSetting && defaultModelSetting.value) {
+      return defaultModelSetting.value;
+    }
+    
+    // Fallback to hardcoded default if no setting found
+    console.warn('No default_model setting found in database, using fallback');
+    return 'gemini-2.0-flash-001';
+  } catch (error) {
+    console.error('Error fetching default model from database:', error);
+    // Fallback to hardcoded default on error
+    return 'gemini-2.0-flash-001';
   }
-  return defaultModel.name;
 }
 
 // Simple decryption function (in production, use proper decryption)
@@ -38,14 +49,13 @@ export async function getActiveModel() {
 
     const provider = activeModel.provider;
     const decryptedApiKey = decryptApiKey(activeModel.encryptedApiKey);
-    const modelName = activeModel.modelName;
     
     if (provider === 'openai') {
       const openaiProvider = createOpenAI({ apiKey: decryptedApiKey });
-      return openaiProvider(modelName);
+      return openaiProvider(activeModel.modelId);
     } else if (provider === 'gemini') {
       const googleProvider = createGoogleGenerativeAI({ apiKey: decryptedApiKey });
-      return googleProvider(modelName);
+      return googleProvider(activeModel.modelId);
     }
     
     // Fallback to default model
@@ -59,14 +69,18 @@ export async function getActiveModel() {
 
 export async function getModelByName(modelName: string) {
   try {
+    // console.log('DEBUG: getModelByName called with modelName =', modelName);
     const activeModel = await getActiveAiModel();
+    // console.log('DEBUG: activeModel from database =', activeModel);
     if (!activeModel) {
-      console.warn('No active AI model found, falling back to Google provider');
+      console.warn('No active AI model found, falling back to Google provider with modelName:', modelName);
+      console.warn('This might cause issues if modelName is not a valid Google model');
       return google(modelName);
     }
 
     const provider = activeModel.provider;
     const decryptedApiKey = decryptApiKey(activeModel.encryptedApiKey);
+    // console.log('DEBUG: provider =', provider, 'modelName =', modelName);
     
     if (provider === 'openai') {
       const openaiProvider = createOpenAI({ apiKey: decryptedApiKey });
@@ -112,4 +126,5 @@ export async function getActiveProvider() {
 }
 
 // Deprecated: Use getDefaultChatModel() instead
+// This constant is kept for backward compatibility but should not be used
 export const DEFAULT_CHAT_MODEL: string = 'gemini-2.0-flash-001';

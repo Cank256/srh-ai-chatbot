@@ -1,10 +1,13 @@
-import { getSystemSettings } from '@/lib/db/queries';
+import { getSystemSettings, getAllAiModels } from '@/lib/db/queries';
 import { SystemSettingsForm } from '@/components/system-settings-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 export default async function SettingsPage() {
-  const settings = await getSystemSettings();
+  const [settings, availableModels] = await Promise.all([
+    getSystemSettings(),
+    getAllAiModels()
+  ]);
 
   // Convert settings array to object for easier access
   const settingsMap = settings.reduce((acc, setting) => {
@@ -30,7 +33,7 @@ export default async function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SystemSettingsForm settings={settingsMap} />
+            <SystemSettingsForm settings={settingsMap} availableModels={availableModels} />
           </CardContent>
         </Card>
 

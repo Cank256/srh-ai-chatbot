@@ -63,7 +63,9 @@ export async function POST(request: Request) {
 
   return createDataStreamResponse({
     execute: async (dataStream) => {
+      console.log('DEBUG: selectedChatModel =', selectedChatModel);
       const model = await getModelByName(selectedChatModel);
+      console.log('DEBUG: model =', model);
       const result = streamText({
         model: model,
         system: systemPrompt({ selectedChatModel }),

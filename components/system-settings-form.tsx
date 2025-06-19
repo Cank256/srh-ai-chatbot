@@ -10,17 +10,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { updateSystemSetting } from '@/app/settings/actions';
 import { Loader2 } from 'lucide-react';
+import { type AiModel } from '@/lib/db/schema';
 
 interface SystemSettingsFormProps {
   settings: Record<string, string>;
+  availableModels: AiModel[];
 }
 
-export function SystemSettingsForm({ settings }: SystemSettingsFormProps) {
+export function SystemSettingsForm({ settings, availableModels }: SystemSettingsFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     app_name: settings.app_name || 'AI Chatbot',
     app_description: settings.app_description || 'An intelligent AI-powered chatbot application',
     default_provider: settings.default_provider || 'openai',
+    default_model: settings.default_model || 'gpt-3.5-turbo',
     max_tokens: settings.max_tokens || '4000',
     temperature: settings.temperature || '0.7',
     system_prompt: settings.system_prompt || 'You are a helpful AI assistant.',
@@ -83,6 +86,32 @@ export function SystemSettingsForm({ settings }: SystemSettingsFormProps) {
             <SelectContent>
               <SelectItem value="openai">OpenAI</SelectItem>
               <SelectItem value="google">Google (Gemini)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="default_model">Default AI Model</Label>
+          <Select
+            value={formData.default_model}
+            onValueChange={(value) => handleInputChange('default_model', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select default model" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableModels.length > 0 ? (
+                availableModels.map((model) => (
+                  <SelectItem key={model.id} value={model.modelId}>
+                    {model.modelName} ({model.provider})
+                    {model.isActive && <span className="ml-2 text-green-600">• Active</span>}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="gpt-3.5-turbo" disabled>
+                  No models configured - using fallback
+                </SelectItem>
+              )}
             </SelectContent>
           </Select>
         </div>
