@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   basePath: '/srh',
+  trailingSlash: true,
   images: {
     remotePatterns: [
       {
