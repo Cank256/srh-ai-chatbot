@@ -11,7 +11,7 @@ export default function Success() {
         <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
           <p className="flex flex-row justify-center gap-16 items-center">
             <Image
-              src="/images/bsu-logo.png"
+              src="/srh/images/bsu-logo.png"
               alt="BSU logo"
               width={140}
               height={30}
@@ -19,7 +19,7 @@ export default function Success() {
 
             />
             <Image
-              src="/images/gu-logo.png"
+              src="/srh/images/gu-logo.png"
               alt="GU logo"
               width={100}
               height={10}
