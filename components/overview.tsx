@@ -17,13 +17,13 @@ export const Overview = () => {
       <div className="rounded-xl p-6 flex flex-col gap-8 leading-relaxed text-center max-w-xl">
         <p className="flex flex-row justify-center gap-16 items-center">
           <Image
-            src="/srh/images/bsu-logo.png"
+            src="/images/bsu-logo.png"
             alt="BSU logo"
             width={140}
             height={30}
           />
           <Image
-            src="/srh/images/gu-logo.png"
+            src="/images/gu-logo.png"
             alt="GU logo"
             width={100}
             height={10}

@@ -46,14 +46,14 @@ export default function Page() {
         <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
           <p className="flex flex-row justify-center gap-16 items-center">
             <Image
-              src="/srh/images/bsu-logo.png"
+              src="/images/bsu-logo.png"
               alt="BSU logo"
               width={140}
               height={30}
               priority
             />
             <Image
-              src="/srh/images/gu-logo.png"
+              src="/images/gu-logo.png"
               alt="GU logo"
               width={100}
               height={10}
