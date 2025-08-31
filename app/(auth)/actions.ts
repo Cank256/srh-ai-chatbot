@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 
-import { createUser, getUser, updateUser } from '@/lib/db/queries';
+import { createUser, getUser, updateUser, getUserByResetToken } from '@/lib/db/queries';
 
 import { signIn } from './auth';
 
@@ -121,6 +121,55 @@ export const resetPassword = async (
     
     // Send email to user with reset link
     await sendResetEmail(user.email, resetToken);
+
+    return { status: 'success' };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { status: 'invalid_data' };
+    }
+
+    return { status: 'failed' };
+  }
+};
+
+
+export const checkResetToken = async (
+  token: string
+): Promise<{ email: string; id: string; password: string | null; reset_token: string | null; } | null> => {
+  try {
+    const [user] = await getUserByResetToken(token);
+    return user;
+  } catch(error){
+    throw error;
+  }
+};
+
+export const updatePassword = async (
+  _: ResetPasswordActionState,
+  formData: FormData,
+): Promise<ResetPasswordActionState> => {
+  try {
+    const validatedData = authFormSchema.parse({
+      email: formData.get('email'),
+      password: formData.get('password'),
+    });
+
+    const [user] = await getUser(validatedData.email);
+
+    if (!user) {
+      return { status: 'failed' };
+    }
+    // Generate a unique reset token
+    user.password = validatedData.password;
+    user.reset_token = null;
+    console.error(user);
+    await updateUser(true, user);
+    
+    await signIn('credentials', {
+      email: validatedData.email,
+      password: validatedData.password,
+      redirect: false,
+    });
 
     return { status: 'success' };
   } catch (error) {
