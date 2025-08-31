@@ -1,9 +1,11 @@
 'use client';
-import { ChevronUp } from 'lucide-react';
+import { ChevronUp, Settings } from 'lucide-react';
 import Image from 'next/image';
-import type { User } from 'next-auth';
+import Link from 'next/link';
+import type { User as NextAuthUser } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
+import type { User } from '@/lib/db/schema';
 
 import {
   DropdownMenu,
@@ -18,7 +20,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
-export function SidebarUserNav({ user }: { user: User }) {
+export function SidebarUserNav({ user }: { user: User | NextAuthUser }) {
   const { setTheme, theme } = useTheme();
 
   return (
@@ -48,6 +50,17 @@ export function SidebarUserNav({ user }: { user: User }) {
             >
               {`Toggle ${theme === 'light' ? 'dark' : 'light'} mode`}
             </DropdownMenuItem>
+            {('role' in user && user.role === 'admin') && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/admin" className="flex items-center cursor-pointer">
+                    <Settings className="mr-2 size-4" />
+                    Admin Dashboard
+                  </Link>
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <button

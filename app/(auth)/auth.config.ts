@@ -12,10 +12,11 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnChat = nextUrl.pathname.startsWith('/');
+      const isOnChat = nextUrl.pathname === '/' || (nextUrl.pathname.startsWith('/') && !nextUrl.pathname.startsWith('/admin'));
       const isOnRegister = nextUrl.pathname.startsWith('/register');
       const isOnLogin = nextUrl.pathname.startsWith('/login');
       const isOnResetPassword = nextUrl.pathname.startsWith('/reset-password');
+      const isOnAdmin = nextUrl.pathname === '/admin' || nextUrl.pathname.startsWith('/admin/');
 
       if (isLoggedIn && (isOnLogin || isOnRegister || isOnResetPassword)) {
         return Response.redirect(new URL('/', nextUrl as unknown as URL));
@@ -23,6 +24,11 @@ export const authConfig = {
 
       if (isOnRegister || isOnLogin || isOnResetPassword) {
         return true; // Always allow access to register and login pages
+      }
+
+      if (isOnAdmin) {
+        // Admin routes are handled by middleware
+        return true;
       }
 
       if (isOnChat) {

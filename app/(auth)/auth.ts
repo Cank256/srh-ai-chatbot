@@ -1,5 +1,8 @@
 import { compare } from 'bcrypt-ts';
-import NextAuth, { type User, type Session } from 'next-auth';
+import NextAuth, { type Session, type User as NextAuthUser } from 'next-auth';
+
+// Extend the NextAuth User type to include role
+type User = NextAuthUser & { role?: string };
 import Credentials from 'next-auth/providers/credentials';
 
 import { getUser } from '@/lib/db/queries';
@@ -7,7 +10,7 @@ import { getUser } from '@/lib/db/queries';
 import { authConfig } from './auth.config';
 
 interface ExtendedSession extends Session {
-  user: User;
+  user: User & { role?: string };
 }
 
 export const {
@@ -17,6 +20,7 @@ export const {
   signOut,
 } = NextAuth({
   ...authConfig,
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {},
@@ -34,6 +38,11 @@ export const {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        // Use type assertion to access the role property
+        const userWithRole = user as any;
+        if (userWithRole.role) {
+          token.role = userWithRole.role;
+        }
       }
 
       return token;
@@ -47,6 +56,7 @@ export const {
     }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
 
       return session;

@@ -4,6 +4,7 @@ import type { ChatRequestOptions, Message } from 'ai';
 import cx from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useMemo, useState } from 'react';
+import type { User } from 'next-auth';
 
 import type { Vote } from '@/lib/db/schema';
 
@@ -34,6 +35,7 @@ const PurePreviewMessage = ({
   setMessages,
   reload,
   isReadonly,
+  user,
 }: {
   chatId: string;
   message: Message;
@@ -46,6 +48,7 @@ const PurePreviewMessage = ({
     chatRequestOptions?: ChatRequestOptions,
   ) => Promise<string | null | undefined>;
   isReadonly: boolean;
+  user?: User;
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
@@ -86,14 +89,7 @@ const PurePreviewMessage = ({
               </div>
             )}
 
-            {message.reasoning && (
-              <MessageReasoning
-                isLoading={isLoading}
-                reasoning={message.reasoning}
-              />
-            )}
-
-            {(message.content || message.reasoning) && mode === 'view' && (
+            {message.content && mode === 'view' && (
               <div className="flex flex-row gap-2 items-start">
                 {message.role === 'user' && !isReadonly && (
                   <Tooltip>
@@ -209,6 +205,7 @@ const PurePreviewMessage = ({
                 message={message}
                 vote={vote}
                 isLoading={isLoading}
+                user={user}
               />
             )}
           </div>
@@ -222,8 +219,7 @@ export const PreviewMessage = memo(
   PurePreviewMessage,
   (prevProps, nextProps) => {
     if (prevProps.isLoading !== nextProps.isLoading) return false;
-    if (prevProps.message.reasoning !== nextProps.message.reasoning)
-      return false;
+
     if (prevProps.message.content !== nextProps.message.content) return false;
     if (
       !equal(

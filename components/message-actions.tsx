@@ -2,6 +2,7 @@ import type { Message } from 'ai';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
 import { useCopyToClipboard } from 'usehooks-ts';
+import type { User } from 'next-auth';
 
 import type { Vote } from '@/lib/db/schema';
 
@@ -21,11 +22,13 @@ export function PureMessageActions({
   message,
   vote,
   isLoading,
+  user,
 }: {
   chatId: string;
   message: Message;
   vote: Vote | undefined;
   isLoading: boolean;
+  user?: User;
 }) {
   const { mutate } = useSWRConfig();
   const [_, copyToClipboard] = useCopyToClipboard();
@@ -58,10 +61,15 @@ export function PureMessageActions({
           <TooltipTrigger asChild>
             <Button
               className="py-1 px-2 h-fit text-muted-foreground !pointer-events-auto"
-              disabled={vote?.isUpvoted}
+              disabled={vote?.isUpvoted || !user}
               variant="outline"
               onClick={async () => {
-                const upvote = fetch('/api/vote', {
+                if (!user) {
+                  toast.error('Please log in to vote on responses.');
+                  return;
+                }
+                
+                const upvote = fetch('/chat/api/vote', {
                   method: 'PATCH',
                   body: JSON.stringify({
                     chatId,
@@ -74,7 +82,7 @@ export function PureMessageActions({
                   loading: 'Upvoting Response...',
                   success: () => {
                     mutate<Array<Vote>>(
-                      `/api/vote?chatId=${chatId}`,
+                      `/chat/api/vote?chatId=${chatId}`,
                       (currentVotes) => {
                         if (!currentVotes) return [];
 
@@ -111,9 +119,14 @@ export function PureMessageActions({
             <Button
               className="py-1 px-2 h-fit text-muted-foreground !pointer-events-auto"
               variant="outline"
-              disabled={vote && !vote.isUpvoted}
+              disabled={(vote && !vote.isUpvoted) || !user}
               onClick={async () => {
-                const downvote = fetch('/api/vote', {
+                if (!user) {
+                  toast.error('Please log in to vote on responses.');
+                  return;
+                }
+                
+                const downvote = fetch('/chat/api/vote', {
                   method: 'PATCH',
                   body: JSON.stringify({
                     chatId,
@@ -126,7 +139,7 @@ export function PureMessageActions({
                   loading: 'Downvoting Response...',
                   success: () => {
                     mutate<Array<Vote>>(
-                      `/api/vote?chatId=${chatId}`,
+                      `/chat/api/vote?chatId=${chatId}`,
                       (currentVotes) => {
                         if (!currentVotes) return [];
 

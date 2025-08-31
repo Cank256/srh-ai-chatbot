@@ -1,10 +1,10 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 14 and App Router-ready AI chatbot." src="app/(chat)/opengraph-image.png">
-  <h1 align="center">Next.js AI Chatbot</h1>
+<a href="#">
+  <img alt="SRH AI Chatbot for Uganda" src="app/(chat)/srh-ai-image.png">
+  <h1 align="center">SRH AI Chatbot</h1>
 </a>
 
 <p align="center">
-  An Open-Source AI Chatbot Template Built With Next.js and the AI SDK by Vercel.
+  An AI-powered Sexual and Reproductive Health (SRH) chatbot designed specifically for Uganda, providing accessible health information and support.
 </p>
 
 <p align="center">
@@ -15,47 +15,104 @@
 </p>
 <br/>
 
+## About
+
+The SRH AI Chatbot is designed to provide accessible, accurate, and culturally appropriate sexual and reproductive health information for users in Uganda. This chatbot serves as a digital health companion, offering:
+
+- **Confidential Health Consultations**: Private, judgment-free conversations about sexual and reproductive health topics
+- **Educational Resources**: Evidence-based information on family planning, maternal health, STI prevention, and more
+- **Local Context**: Information tailored to the Ugandan healthcare system and cultural context
+- **Multi-format Support**: Interactive artifacts for documents, data visualization, and educational content
+
 ## Features
 
-- [Next.js](https://nextjs.org) App Router
-  - Advanced routing for seamless navigation and performance
-  - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
-- [AI SDK](https://sdk.vercel.ai/docs)
-  - Unified API for generating text, structured objects, and tool calls with LLMs
-  - Hooks for building dynamic chat and generative user interfaces
-  - Supports OpenAI (default), Anthropic, Cohere, and other model providers
-- [shadcn/ui](https://ui.shadcn.com)
-  - Styling with [Tailwind CSS](https://tailwindcss.com)
-  - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
-- Data Persistence
-  - [Vercel Postgres powered by Neon](https://vercel.com/storage/postgres) for saving chat history and user data
-  - [Vercel Blob](https://vercel.com/storage/blob) for efficient file storage
-- [NextAuth.js](https://github.com/nextauthjs/next-auth)
-  - Simple and secure authentication
+### Core Functionality
+- **AI-Powered Conversations**: Intelligent responses using Google's Gemini 2.0 Flash model
+- **Artifact System**: Interactive workspace for creating and editing:
+  - **Text Documents**: Health education materials, care plans, and informational content
+  - **Data Sheets**: Health tracking, appointment schedules, and medical records
+  - **Code Execution**: Health calculators and data analysis tools
+  - **Image Processing**: Medical image annotation and educational diagrams
 
-## Model Providers
+### Technical Features
+- [Next.js](https://nextjs.org) App Router with React Server Components
+- [AI SDK](https://sdk.vercel.ai/docs) for advanced language model integration
+- [shadcn/ui](https://ui.shadcn.com) with [Tailwind CSS](https://tailwindcss.com) for modern, accessible design
+- Secure data persistence with [Vercel Postgres](https://vercel.com/storage/postgres) and [Vercel Blob](https://vercel.com/storage/blob)
+- [NextAuth.js](https://github.com/nextauthjs/next-auth) for secure user authentication
 
-This template ships with OpenAI `gpt-4o` as the default. However, with the [AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://sdk.vercel.ai/providers/ai-sdk-providers) with just a few lines of code.
+## AI Model
 
-## Deploy Your Own
+This application uses Google's Gemini 2.0 Flash model as the primary AI engine, specifically configured as the "SRH AI Chatbot model for Uganda." The model is optimized to provide:
 
-You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
+- Culturally sensitive health information relevant to Uganda
+- Evidence-based medical guidance
+- Appropriate referrals to local healthcare services
+- Support in multiple languages as needed
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot&env=AUTH_SECRET,OPENAI_API_KEY&envDescription=Learn%20more%20about%20how%20to%20get%20the%20API%20Keys%20for%20the%20application&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot%2Fblob%2Fmain%2F.env.example&demo-title=AI%20Chatbot&demo-description=An%20Open-Source%20AI%20Chatbot%20Template%20Built%20With%20Next.js%20and%20the%20AI%20SDK%20by%20Vercel.&demo-url=https%3A%2F%2Fchat.vercel.ai&stores=[{%22type%22:%22postgres%22},{%22type%22:%22blob%22}])
+The [AI SDK](https://sdk.vercel.ai/docs) architecture allows for easy model switching if needed, supporting providers like [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), and [others](https://sdk.vercel.ai/providers/ai-sdk-providers).
 
-## Running locally
+## Deployment
 
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+This SRH AI Chatbot can be deployed to various platforms. For Vercel deployment, you'll need to configure the following environment variables:
 
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various OpenAI and authentication provider accounts.
+- `AUTH_SECRET`: Secret key for authentication
+- `GOOGLE_GENERATIVE_AI_API_KEY`: API key for Google's Gemini model
+- Database connection strings for Postgres
+- Blob storage configuration
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
+Refer to `.env.example` for the complete list of required environment variables.
 
-```bash
-pnpm install
-pnpm dev
-```
+## Running Locally
 
-Your app template should now be running on [localhost:3000](http://localhost:3000/).
+### Prerequisites
+
+- Node.js 18+ and pnpm
+- Google Generative AI API key
+- PostgreSQL database (local or cloud)
+- Blob storage setup
+
+### Setup
+
+1. **Clone and install dependencies:**
+   ```bash
+   git clone <repository-url>
+   cd srh-ai-chatbot
+   pnpm install
+   ```
+
+2. **Environment Configuration:**
+   Copy `.env.example` to `.env` and configure:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Fill in the required environment variables, particularly:
+   - `GOOGLE_GENERATIVE_AI_API_KEY`
+   - Database connection strings
+   - Authentication secrets
+
+3. **Database Setup:**
+   ```bash
+   pnpm db:migrate
+   ```
+
+4. **Start Development Server:**
+   ```bash
+   pnpm dev
+   ```
+
+The application will be available at [localhost:3000](http://localhost:3000/).
+
+> **Security Note**: Never commit your `.env` file. It contains sensitive API keys and secrets.
+
+## Contributing
+
+This project aims to improve sexual and reproductive health access in Uganda. Contributions should prioritize:
+
+- Cultural sensitivity and appropriateness
+- Medical accuracy and evidence-based information
+- Accessibility and usability for diverse users
+- Privacy and security of health data
+
+Please ensure any contributions align with local healthcare guidelines and ethical standards for health information systems.

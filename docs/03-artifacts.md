@@ -2,12 +2,11 @@
 
 Artifacts is a special user interface mode that allows you to have a workspace like interface along with the chat interface. This is similar to [ChatGPT's Canvas](https://openai.com/index/introducing-canvas) and [Claude's Artifacts](https://www.anthropic.com/news/artifacts).
 
-The template already ships with the following artifacts:
+The template ships with the following artifacts:
 
 - **Text Artifact**: A artifact that allows you to work with text content like drafting essays and emails.
 - **Code Artifact**: A artifact that allows you to write and execute code (Python).
-- **Image Artifact**: A artifact that allows you to work with images like editing, annotating, and processing images.
-- **Sheet Artifact**: A artifact that allows you to work with tabular data like creating, editing, and analyzing data.
+- **Image Artifact**: A artifact that allows you to work with images like uploading, viewing, and processing images (supports common image formats like PNG, JPEG, GIF, etc.).
 
 ## Adding a Custom Artifact
 

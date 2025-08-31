@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 
 import { ThemeProvider } from '@/components/theme-provider';
+import ClientLayout from '@/components/client-layout';
 
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://chat.vercel.ai'),
-  title: 'CONSCOV AI Chatbot',
-  description: 'Sexual Reproductive Health AI Chatbot.',
+  metadataBase: new URL(process.env.APP_URL || ''),
+  title: process.env.NEXT_PUBLIC_APP_NAME || '',
+  description: process.env.NEXT_PUBLIC_APP_DESCRIPTION || '',
 };
 
 export const viewport = {
@@ -63,8 +64,10 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Toaster position="top-center" />
-          {children}
+          <ClientLayout>
+            <Toaster position="top-center" />
+            {children}
+          </ClientLayout>
         </ThemeProvider>
       </body>
     </html>

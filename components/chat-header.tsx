@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useWindowSize } from 'usehooks-ts';
+import type { User } from 'next-auth';
 
 import { ModelSelector } from '@/components/model-selector';
 import { SidebarToggle } from '@/components/sidebar-toggle';
@@ -18,11 +19,13 @@ function PureChatHeader({
   selectedModelId,
   selectedVisibilityType,
   isReadonly,
+  user,
 }: {
   chatId: string;
   selectedModelId: string;
   selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
+  user?: User;
 }) {
   const router = useRouter();
   const { open } = useSidebar();
@@ -52,12 +55,12 @@ function PureChatHeader({
         </Tooltip>
       )}
 
-      {!isReadonly && (
+      {/* {!isReadonly && (
         <ModelSelector
           selectedModelId={selectedModelId}
           className="order-1 md:order-2"
         />
-      )}
+      )} */}
 
       {!isReadonly && (
         <VisibilitySelector
@@ -65,6 +68,21 @@ function PureChatHeader({
           selectedVisibilityType={selectedVisibilityType}
           className="order-1 md:order-3"
         />
+      )}
+
+      {!user && (
+        <div className="flex gap-2 ml-auto order-4">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/login">
+              Sign In
+            </Link>
+          </Button>
+          <Button size="sm" asChild>
+            <Link href="/register">
+              Sign Up
+            </Link>
+          </Button>
+        </div>
       )}
 
       {/* <Button
@@ -84,5 +102,8 @@ function PureChatHeader({
 }
 
 export const ChatHeader = memo(PureChatHeader, (prevProps, nextProps) => {
-  return prevProps.selectedModelId === nextProps.selectedModelId;
+  return (
+    prevProps.selectedModelId === nextProps.selectedModelId &&
+    prevProps.user === nextProps.user
+  );
 });
