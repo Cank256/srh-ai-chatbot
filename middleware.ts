@@ -16,7 +16,7 @@ export default auth((req) => {
   const path = nextUrl.pathname;
 
   // Skip static assets
-  if (path.includes('/_next/') || path.includes('/assets/') || path.includes('/favicon.ico') || path.endsWith('.css') || path.endsWith('.js') || path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.gif') || path.endsWith('.svg')) {
+  if (path.includes('/_next/') || path.includes('/assets/') || path.includes('/favicon.ico') || path.endsWith('.css') || path.endsWith('.js') || path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.gif') || path.endsWith('.svg') || path.endsWith('.woff2') || path.endsWith('.woff') || path.endsWith('.ttf') || path.endsWith('.eot')) {
     return NextResponse.next();
   }
 
