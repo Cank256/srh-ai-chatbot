@@ -4,6 +4,9 @@ import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/components/theme-provider';
 import ClientLayout from '@/components/client-layout';
 
+// Import environment validation
+import '@/lib/env-check';
+
 import './globals.css';
 
 export const metadata: Metadata = {

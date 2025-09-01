@@ -15,12 +15,15 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const path = nextUrl.pathname;
 
+  // Skip static assets
+  if (path.includes('/_next/') || path.includes('/assets/') || path.includes('/favicon.ico') || path.endsWith('.css') || path.endsWith('.js') || path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.gif') || path.endsWith('.svg')) {
+    return NextResponse.next();
+  }
+
   // Redirect root path to /chat
   if (path === '/') {
     return NextResponse.redirect(new URL('/chat', req.url));
   }
-
-
 
   // Check if the current path is an admin route
   const adminRoutePattern = /^\/admin(?:\/|$)/;
@@ -46,12 +49,14 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    '/',
-    '/chat/:path*',
-    '/api/:path*',
-    '/login',
-    '/register',
-    '/admin',
-    '/admin/:path*',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder files
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|assets|.*\\..*$).*)',
   ],
 };
